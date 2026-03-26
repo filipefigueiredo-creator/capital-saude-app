@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#204989">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Capital Saúde">
+<title></title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js'))</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+:root{--p:#204989;--pd:#163266;--pl:#2d5eaa;--a1:#3BD77E;--a2:#83EDA3;--w:#fff;--g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g400:#94a3b8;--g600:#475569;--g800:#1e293b;--danger:#ef4444;--warn:#f59e0b;--rm:12px;--rmd:16px;--rl:24px;--rxl:32px;--s1:0 2px 8px rgba(32,73,137,.08);--s2:0 4px 20px rgba(32,73,137,.14);--s3:0 8px 40px rgba(32,73,137,.2)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--g50);color:var(--g800);min-height:100vh;overflow-x:hidden;max-width:430px;margin:0 auto}
+.screen{display:none;min-height:100vh;flex-direction:column}.screen.active{display:flex}
+#splash{background:linear-gradient(160deg,var(--pd) 0%,var(--p) 55%,var(--pl) 100%);align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden}
+.sb{position:absolute;inset:0}.sc{position:absolute;border-radius:50%;opacity:.07}
+.sc1{width:420px;height:420px;background:var(--a1);top:-120px;right:-100px}
+.sc2{width:320px;height:320px;background:var(--a2);bottom:-100px;left:-80px}
+.splash-inner{position:relative;z-index:1;text-align:center;padding:2rem;width:100%;max-width:360px}
+.ss{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:2.5rem}
+.pl-label{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:12px}
+.pcards{display:flex;flex-direction:column;gap:10px;width:100%}
+.pcard{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--rmd);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s;backdrop-filter:blur(12px)}
+.pcard:active{transform:scale(.97);background:rgba(255,255,255,.18)}
+.pi{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.pi-c{background:rgba(59,215,126,.2)}.pi-r{background:rgba(255,255,255,.15)}
+.pinfo{flex:1;text-align:left}.pnome{font-size:14px;font-weight:600;color:#fff}.pdesc{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px}.parr{color:rgba(255,255,255,.35);font-size:18px}
+.hdr{background:var(--p);padding:52px 20px 20px;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(59,215,126,.1);top:-70px;right:-50px}
+.htop{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative;z-index:1}
+.hback{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:20px;display:none}
+.hback.visible{display:flex}
+.hnotif{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.ndot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--a1);border-radius:50%;border:2px solid var(--p)}
+.hgreet{position:relative;z-index:1}
+.hname{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:2px}
+.hsub{font-size:12px;color:rgba(255,255,255,.55)}
+.hbadge{display:inline-flex;align-items:center;gap:5px;background:rgba(59,215,126,.18);border:1px solid rgba(59,215,126,.28);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;color:var(--a1);margin-top:8px}
+.subscreen{display:none;position:fixed;inset:0;background:var(--g50);z-index:200;max-width:430px;margin:0 auto;overflow-y:auto}
+.subscreen.active{display:block}
+.sub-header{background:var(--p);padding:52px 20px 16px;display:flex;align-items:center;gap:12px}
+.sub-back{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sub-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;color:#fff}
+.sub-body{padding:16px 15px 90px}
+.body{flex:1;padding:18px 15px 110px;overflow-y:auto}.body::-webkit-scrollbar{width:0}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--g100);display:flex;padding:10px 6px calc(16px + env(safe-area-inset-bottom));z-index:100;box-shadow:0 -4px 20px rgba(32,73,137,.07)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 3px;cursor:pointer;border-radius:11px;transition:all .2s;border:none;background:none}
+.ni.active{background:rgba(32,73,137,.07)}.ni-icon{font-size:19px;line-height:1}
+.ni-lbl{font-size:9px;font-weight:600;letter-spacing:.3px;color:var(--g400)}.ni.active .ni-lbl{color:var(--p)}
+.slbl{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--g400);margin-bottom:11px;margin-top:2px}
+.card{background:#fff;border-radius:var(--rl);padding:16px;margin-bottom:14px;box-shadow:var(--s1);border:1px solid var(--g100)}
+.ctitle{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--g400);margin-bottom:11px}
+.srow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--g100);cursor:pointer}.srow:last-child{border-bottom:none}
+.sico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ig{background:rgba(59,215,126,.1)}.ib{background:rgba(32,73,137,.08)}.io{background:rgba(245,158,11,.1)}.ir{background:rgba(239,68,68,.09)}
+.sinfo{flex:1}.sname{font-size:13px;font-weight:500;color:var(--g800)}.sval{font-size:11px;color:var(--g400);margin-top:1px}
+.chip{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
+.cg{background:rgba(59,215,126,.13);color:#16a34a}.co{background:rgba(245,158,11,.11);color:#d97706}.cr{background:rgba(239,68,68,.09);color:#dc2626}.cb{background:rgba(32,73,137,.09);color:var(--p)}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}.agrid.c1{grid-template-columns:1fr}
+.acard{background:#fff;border-radius:var(--rmd);padding:15px 13px;cursor:pointer;transition:all .2s;box-shadow:var(--s1);border:1px solid var(--g100);display:flex;flex-direction:column;gap:9px}
+.acard:active{transform:scale(.97)}
+.acard.feat{background:linear-gradient(135deg,var(--p),var(--pl));border-color:transparent;grid-column:span 2}
+.acard.feat2{background:linear-gradient(135deg,var(--pd),var(--p));border-color:transparent;grid-column:span 2}
+.acard.acc{background:linear-gradient(135deg,#16a34a,var(--a1));border-color:transparent}
+.aic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.aip{background:rgba(32,73,137,.09)}.aia{background:rgba(59,215,126,.14)}.aiw{background:rgba(255,255,255,.15)}.aio{background:rgba(245,158,11,.09)}.aipu{background:rgba(139,92,246,.09)}.air{background:rgba(239,68,68,.09)}.ait{background:rgba(20,184,166,.09)}.aiwp{background:rgba(37,211,102,.12)}
+.atitle{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:var(--g800);line-height:1.3}.asub{font-size:10px;color:var(--g400);margin-top:1px}
+.acard.feat .atitle,.acard.feat .asub,.acard.feat2 .atitle,.acard.feat2 .asub{color:#fff}
+.acard.feat .asub,.acard.feat2 .asub{color:rgba(255,255,255,.65)}
+.acard.acc .atitle,.acard.acc .asub{color:#fff}.acard.acc .asub{color:rgba(255,255,255,.7)}
+.mcard{background:linear-gradient(135deg,var(--p),var(--pl));border-radius:var(--rl);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.mcard::after{content:'';position:absolute;width:110px;height:110px;border-radius:50%;background:rgba(59,215,126,.13);bottom:-28px;right:-18px}
+.mctitle{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.mcsub{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:14px}
+.mopts{display:flex;gap:7px;flex-wrap:wrap;position:relative;z-index:1}
+.mopt{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 13px;font-size:12px;font-weight:500;color:#fff;cursor:pointer;transition:all .2s}
+.mopt.sel{background:var(--a1);border-color:var(--a1);color:var(--pd);font-weight:700}
+.pend-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--g100)}.pend-item:last-child{border-bottom:none}
+.pend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pend-info{flex:1}.pend-titulo{font-size:13px;font-weight:500;color:var(--g800)}.pend-sub{font-size:11px;color:var(--g400);margin-top:1px}
+.cart-wrap{padding:0 0 14px}
+.cart{background:linear-gradient(135deg,var(--pd) 0%,var(--p) 60%,var(--pl) 100%);border-radius:var(--rxl);padding:22px 28px;position:relative;overflow:hidden;box-shadow:var(--s3);width:100%;aspect-ratio:1.75/1}
+.cart::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;border:40px solid rgba(59,215,126,.08);top:-60px;right:-60px}
+.cchip{width:36px;height:26px;background:linear-gradient(135deg,#d4af37,#f0d060);border-radius:5px;margin-bottom:20px;position:relative;z-index:1}
+.cnome{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:2px;position:relative;z-index:1}
+.cemp{font-size:12px;color:rgba(255,255,255,.55);position:relative;z-index:1;margin-bottom:24px}
+.cbot{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
+.cil{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:2px}
+.civ{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff}
+.clogo{font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:800;color:var(--a1);text-align:right;line-height:1.3}
+.bitem{background:#fff;border-radius:var(--rmd);padding:13px;margin-bottom:7px;display:flex;align-items:center;gap:11px;box-shadow:var(--s1);border:1px solid var(--g100);cursor:pointer;transition:all .2s}.bitem:active{transform:scale(.98)}
+.bico{width:42px;height:42px;border-radius:11px;background:rgba(32,73,137,.07);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.binfo{flex:1}.bnome{font-size:13px;font-weight:600;color:var(--g800)}.btipo{font-size:11px;color:var(--g400);margin-top:1px}.bdist{font-size:11px;font-weight:700;color:var(--p)}
+.dcard{background:#fff;border-radius:var(--rl);padding:18px;margin-bottom:12px;box-shadow:var(--s1);border:1px solid var(--g100)}
+.dtitle{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;color:var(--g800);margin-bottom:4px}
+.dsub{font-size:12px;color:var(--g400);line-height:1.5;margin-bottom:14px}
+.dopts{display:flex;flex-direction:column;gap:7px}
+.dopt{padding:11px 13px;border-radius:var(--rm);background:var(--g50);border:1.5px solid var(--g200);cursor:pointer;font-size:13px;font-weight:500;color:var(--g600);text-align:left;transition:all .2s;display:flex;align-items:center;gap:9px}
+.dopt:active,.dopt.sel{background:rgba(32,73,137,.05);border-color:var(--p);color:var(--p)}
+.danon{display:flex;align-items:center;gap:8px;padding:11px;background:rgba(59,215,126,.07);border-radius:var(--rm)}
+.achk{width:19px;height:19px;border-radius:5px;background:var(--a1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:#fff}
+.atxt{font-size:11px;color:#16a34a;font-weight:500}
+.upload-area{border:2px dashed var(--g200);border-radius:var(--rmd);padding:16px;text-align:center;cursor:pointer;transition:all .2s;margin-top:10px}
+.upload-area:active{border-color:var(--p);background:rgba(32,73,137,.03)}
+.upload-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.upload-thumb{width:60px;height:60px;border-radius:8px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--g200)}
+.upload-thumb-name{font-size:9px;color:var(--g600);text-align:center;margin-top:2px;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.termo-box{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:var(--rm);padding:12px;margin-top:12px;font-size:11px;color:var(--g600);line-height:1.6}
+.termo-check{display:flex;align-items:flex-start;gap:8px;margin-top:10px;cursor:pointer}
+.termo-checkbox{width:18px;height:18px;border-radius:4px;border:2px solid var(--g400);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+.termo-checkbox.checked{background:var(--p);border-color:var(--p);color:#fff;font-size:11px}
+.termo-txt{font-size:11px;color:var(--g600);line-height:1.5}
+.flbl{font-size:12px;font-weight:600;color:var(--g600);margin-bottom:5px;display:block;margin-top:12px}
+.fta{width:100%;padding:11px;border:1.5px solid var(--g200);border-radius:var(--rm);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--g800);resize:none;min-height:100px;background:var(--g50);transition:border-color .2s}
+.fta:focus{outline:none;border-color:var(--p);background:#fff}.fta.erro{border-color:var(--danger)}
+.btnp{width:100%;padding:13px;background:var(--p);color:#fff;border:none;border-radius:var(--rmd);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;transition:all .2s}
+.btnp:active{transform:scale(.98);background:var(--pd)}
+.btno{width:100%;padding:12px;background:transparent;color:var(--p);border:1.5px solid var(--p);border-radius:var(--rmd);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:7px;transition:all .2s}
+.btno:active{background:rgba(32,73,137,.05)}
+.btnd{width:100%;padding:12px;background:transparent;color:var(--danger);border:1.5px solid var(--danger);border-radius:var(--rmd);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:7px}
+.prog-bar{height:6px;background:var(--g100);border-radius:3px;overflow:hidden;margin-top:4px}
+.prog-fill{height:100%;border-radius:3px;transition:width .4s}
+.alerta-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:var(--rm);padding:10px 12px;font-size:11px;color:#dc2626;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.info-box{background:rgba(32,73,137,.05);border:1px solid rgba(32,73,137,.12);border-radius:var(--rm);padding:10px 12px;font-size:11px;color:var(--p);margin-bottom:8px}
+.ok-box{background:rgba(59,215,126,.08);border:1px solid rgba(59,215,126,.2);border-radius:var(--rm);padding:10px 12px;font-size:11px;color:#16a34a;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.film-area{background:var(--g50);border-radius:var(--rmd);overflow:hidden;margin-bottom:14px;position:relative;min-height:200px;display:flex;align-items:center;justify-content:center;border:2px dashed var(--g200)}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--g800);color:#fff;padding:11px 18px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;max-width:300px;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fu .3s ease forwards}.fu2{animation:fu .3s .07s ease both}.fu3{animation:fu .3s .14s ease both}
+.carousel{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.carousel::-webkit-scrollbar{display:none}
+.carousel-slide{min-width:calc(100% - 0px);scroll-snap-align:start;background:#fff;border-radius:var(--rl);padding:16px;box-shadow:var(--s1);border:1px solid var(--g100)}
+.carousel-dots{display:flex;justify-content:center;gap:6px;margin-top:8px;margin-bottom:14px}
+.cdot{width:6px;height:6px;border-radius:50%;background:var(--g200);cursor:pointer;transition:all .2s}
+.cdot.active{background:var(--p);width:18px;border-radius:3px}
+.mconta{position:fixed;bottom:78px;right:8px;background:#fff;border-radius:var(--rl);box-shadow:var(--s3);border:0.5px solid var(--g100);overflow:hidden;z-index:300;min-width:190px;display:none;transform:translateY(10px);transition:all .2s}
+.mconta.open{display:block;transform:translateY(0)}
+.mco-item{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;border-bottom:0.5px solid var(--g100);font-size:13px;font-weight:500;color:var(--g800);transition:background .15s}
+.mco-item:last-child{border-bottom:none}.mco-item:active{background:var(--g50)}
+.mco-overlay{position:fixed;inset:0;z-index:299;display:none}.mco-overlay.open{display:block}
+</style>
+</head>
+<body>
+<div id="splash" class="screen active">
+  <div class="sb"><div class="sc sc1"></div><div class="sc sc2"></div></div>
+  <div class="splash-inner">
+    <div style="text-align:center"><svg style="height:60px;width:auto;display:block;margin:0 auto" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1618.949 537.536">
+  <defs>
+    <style>
+      .sp-cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .sp-cls-2 {
+        fill: #fff;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="59.475" y1="250.406" x2="456.112" y2="250.406" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3bd77e"/>
+      <stop offset=".5" stop-color="#83eda3"/>
+      <stop offset="1" stop-color="#adf683"/>
+    </linearGradient>
+  </defs>
+  <path class="sp-cls-1" d="M414.104,344.507c-31.476,58.727-94.204,96.493-158.581,96.493-3.592,0-7.182-.118-10.779-.355-67.997-4.499-130.788-51.725-156.25-117.52-3.574-9.233,1.014-19.617,10.249-23.19,9.226-3.579,19.617,1.013,23.19,10.249,20.205,52.208,71.68,91.143,125.178,94.682,53.403,3.52,109.103-28.252,135.391-77.298,4.676-8.728,15.54-12.015,24.271-7.332,8.727,4.677,12.01,15.544,7.332,24.271ZM454.676,208.641c-3.979,21.439-17.14,41.127-36.11,54.017-17.654,11.997-38.006,16.52-57.313,12.734-9.716-1.905-16.048-11.327-14.143-21.043,1.905-9.716,11.337-16.05,21.043-14.143,9.831,1.927,20.583-.631,30.26-7.205,10.944-7.437,18.798-18.989,21.009-30.903,4.44-23.92-9.399-51.081-32.904-64.586-22.473-12.907-52.657-14.238-80.746-3.558-6.755,2.57-13.391,5.774-19.894,9.605,20.608,31.861,32.734,69.106,34.136,107.523,1.511,41.431-12.943,73.686-39.657,88.494-9.633,5.341-20.51,7.903-31.543,7.904-20.611.001-41.771-8.94-56.448-25.421-18.755-21.061-26.394-52.312-20.432-83.593,4.535-23.797,16.28-47.394,35.908-72.137,8.685-10.948,17.773-20.753,27.234-29.391-7.092-7.495-14.831-14.347-23.139-20.4-11.781-8.585-42.265-27.58-70.826-18.59-18.013,5.675-38.643,26.365-44.122,59.8-4.81,29.361,1.664,60.448,7.925,90.511,2.019,9.693-4.202,19.187-13.896,21.206-9.688,2.018-19.189-4.203-21.206-13.896-6.607-31.722-14.095-67.677-8.207-103.619,6.986-42.629,33.965-77.249,68.733-88.201,31.079-9.793,68.519-1.113,102.718,23.811,11.184,8.151,21.465,17.37,30.738,27.458,9.459-5.901,19.21-10.766,29.233-14.578,38.03-14.46,79.657-12.227,111.352,5.982,36.856,21.174,57.539,63.208,50.297,102.22ZM284.181,252.39c-1.114-30.514-10.854-60.803-27.128-86.931-7.264,6.848-14.31,14.57-21.119,23.152-15.94,20.095-25.353,38.598-28.777,56.566-3.832,20.108.761,40.43,11.986,53.035,11.278,12.662,30.938,17.148,43.832,10.004,21.139-11.718,21.577-45.692,21.206-55.825Z"/>
+  <g>
+    <path class="sp-cls-2" d="M520.534,258.414c0-52.197,36.166-88.023,89.73-88.023,24.565,0,45.717,8.531,63.798,25.933l-23.198,24.905c-10.238-10.238-24.905-16.039-39.92-16.039-30.701,0-52.197,21.835-52.197,53.224,0,31.729,21.151,53.224,52.197,53.224,16.378,0,31.389-6.14,41.623-17.402l23.542,25.589c-18.765,18.081-39.576,26.612-65.505,26.612-54.587,0-90.07-34.799-90.07-88.023Z"/>
+    <path class="sp-cls-2" d="M862.746,174.145v168.539h-34.115l-.344-22.519c-12.964,16.378-35.479,26.272-61.407,26.272-49.47,0-83.59-36.166-83.59-88.023s34.12-88.023,83.59-88.023c26.268,0,48.443,9.894,61.407,26.272l.344-22.519h34.115ZM824.537,258.414c0-31.389-21.155-53.224-51.517-53.224s-51.517,21.835-51.517,53.224,21.151,53.224,51.517,53.224,51.517-21.835,51.517-53.224Z"/>
+    <path class="sp-cls-2" d="M1080.084,258.414c0,51.857-34.115,88.023-83.586,88.023-23.542,0-44.353-8.187-57.657-22.179v74.736h-38.213v-224.85h34.12l.34,22.519c12.964-16.378,35.483-26.272,61.411-26.272,49.47,0,83.586,36.166,83.586,88.023ZM1041.875,258.414c0-31.389-21.155-53.224-51.517-53.224-30.022,0-51.517,21.835-51.517,53.224s21.495,53.224,51.517,53.224c30.362,0,51.517-21.835,51.517-53.224Z"/>
+    <path class="sp-cls-2" d="M1101.936,125.698c0-13.988,10.238-23.882,24.226-23.882,14.667,0,24.905,9.894,24.905,23.882,0,13.308-10.238,23.202-24.905,23.202-13.988,0-24.226-9.894-24.226-23.202ZM1107.053,174.145h38.213v168.539h-38.213v-168.539Z"/>
+    <path class="sp-cls-2" d="M1295.044,336.883c-12.964,5.801-23.882,8.187-37.869,8.187-34.799,0-55.271-20.128-55.271-60.384v-78.129h-31.729v-32.413h31.729v-44.01l37.869-4.094v48.103h48.447v32.413h-48.447v78.129c0,17.058,7.847,26.608,23.542,26.608,6.824,0,14.671-2.047,21.151-5.117l10.578,30.706Z"/>
+    <path class="sp-cls-2" d="M1483.38,174.145v168.539h-34.115l-.344-22.519c-12.964,16.378-35.479,26.272-61.407,26.272-49.47,0-83.59-36.166-83.59-88.023s34.12-88.023,83.59-88.023c26.268,0,48.443,9.894,61.407,26.272l.344-22.519h34.115ZM1445.171,258.414c0-31.389-21.155-53.224-51.517-53.224s-51.517,21.835-51.517,53.224,21.151,53.224,51.517,53.224,51.517-21.835,51.517-53.224Z"/>
+    <path class="sp-cls-2" d="M1521.261,103.863h38.213v238.821h-38.213V103.863Z"/>
+  </g>
+  <g>
+    <path class="sp-cls-2" d="M992.088,453.265c-3.867-2.647-6.484-6.157-7.856-10.523l5.893-1.871c1.309,3.246,3.397,5.88,6.266,7.906,2.869,2.026,5.922,3.041,9.168,3.041,1.619,0,3.334-.298,5.142-.889,1.808-.591,3.351-1.59,4.63-2.995,1.279-1.401,1.917-3.225,1.917-5.473,0-1.745-.453-3.179-1.355-4.299-.906-1.124-2.059-2.026-3.46-2.714-1.405-.688-3.133-1.309-5.192-1.871-.247-.063-.407-.109-.466-.143-.063-.029-.189-.075-.377-.138l-4.958-1.405c-.126,0-.218-.029-.277-.092-2.374-.621-4.584-1.451-6.644-2.479-2.059-1.028-3.88-2.554-5.473-4.584-1.59-2.026-2.382-4.63-2.382-7.81,0-3.053.826-5.675,2.479-7.856,1.653-2.181,3.787-3.821,6.405-4.911,2.621-1.09,5.335-1.636,8.141-1.636,4.303,0,8.137,1.2,11.505,3.599,3.368,2.403,5.641,5.41,6.828,9.026l-6.082,2.059c-.935-2.68-2.508-4.895-4.723-6.639-2.215-1.745-4.911-2.621-8.091-2.621-1.934,0-3.666.344-5.192,1.028-1.527.688-2.726,1.669-3.599,2.949-.877,1.279-1.313,2.76-1.313,4.442,0,2.869,1.09,5.054,3.276,6.547,2.181,1.497,4.987,2.747,8.418,3.741.063,0,.109.017.138.05.034.029.08.046.143.046l4.865,1.401c.122,0,.247.034.373.096,2.554.747,4.769,1.573,6.639,2.479,1.871.902,3.511,2.244,4.911,4.022,1.405,1.774,2.105,4.068,2.105,6.874,0,2.869-.78,5.503-2.34,7.902-1.556,2.403-3.741,4.291-6.547,5.658-2.806,1.371-5.985,2.059-9.542,2.059-5.05,0-9.508-1.325-13.375-3.976Z"/>
+    <path class="sp-cls-2" d="M1039.931,455.744c-2.462-.994-4.429-2.508-5.893-4.534-1.464-2.026-2.198-4.505-2.198-7.436,0-3.12.826-5.721,2.479-7.81,1.653-2.089,3.85-3.758,6.593-5.008,2.747-1.246,5.926-2.244,9.542-2.99.751-.189,1.841-.373,3.276-.562,3.305-.625,5.813-1.183,7.529-1.686,1.715-.495,3.07-1.262,4.068-2.29.998-1.028,1.497-2.445,1.497-4.257,0-1.929-.545-3.771-1.636-5.515-1.095-1.749-2.638-3.137-4.63-4.165-1.996-1.028-4.274-1.543-6.828-1.543-3.431,0-6.363.969-8.795,2.902-2.428,1.934-4.177,4.58-5.234,7.948l-6.082-2.152c1.497-4.677,4.131-8.2,7.902-10.569,3.775-2.37,7.998-3.552,12.675-3.552,3.305,0,6.421.608,9.353,1.824,2.932,1.212,5.301,3.116,7.109,5.704,1.808,2.588,2.714,5.813,2.714,9.68v21.139c.063,3.494.218,6.27.47,8.325.247,2.059.654,4.211,1.216,6.455h-6.363c-.436-1.808-.747-3.54-.935-5.192-.189-1.653-.281-3.506-.281-5.566h-.185c-1.749,3.741-4.245,6.736-7.487,8.98-3.242,2.248-7.109,3.368-11.597,3.368-3.058,0-5.817-.499-8.279-1.497ZM1058.406,449.385c2.68-1.808,4.769-4.052,6.266-6.736,1.497-2.68,2.244-5.239,2.244-7.671v-7.013c-1.12.809-2.101,1.434-2.944,1.871-.843.436-2.013.839-3.511,1.216-.809.247-2.743.684-5.796,1.309-2.932.562-5.49,1.2-7.671,1.917-2.185.717-4.114,1.824-5.801,3.322-1.682,1.497-2.525,3.46-2.525,5.893,0,2.617.952,4.71,2.852,6.266,1.904,1.56,4.505,2.34,7.814,2.34,3.364,0,6.388-.906,9.072-2.714Z"/>
+    <path class="sp-cls-2" d="M1098.02,455.182c-2.777-1.367-5.037-3.599-6.782-6.686-1.749-3.087-2.621-7.122-2.621-12.113v-32.366h6.27v29.934c0,6.111,1.321,10.557,3.972,13.329,2.651,2.777,5.943,4.161,9.869,4.161,3.305,0,6.157-.885,8.56-2.663,2.399-1.778,4.24-4.085,5.52-6.92,1.275-2.839,1.917-5.721,1.917-8.653v-29.187h6.266v35.453c0,3.989.143,7.109.419,9.353.281,2.244.705,4.521,1.267,6.828h-6.363c-.063-.247-.126-.436-.189-.562-.373-1.745-.654-3.351-.839-4.815-.189-1.468-.281-2.856-.281-4.165h-.189c-1.871,3.741-4.303,6.535-7.294,8.372-2.995,1.841-6.455,2.76-10.385,2.76-3.305,0-6.346-.688-9.118-2.059ZM1106.111,397.285l11.224-17.867h8.606l-14.218,17.867h-5.612Z"/>
+    <path class="sp-cls-2" d="M1155.451,453.735c-3.649-2.34-6.501-5.582-8.56-9.73-2.059-4.144-3.087-8.837-3.087-14.076,0-5.36,1.044-10.116,3.133-14.264,2.089-4.148,4.974-7.373,8.653-9.68,3.678-2.307,7.763-3.46,12.255-3.46,4.114,0,7.872,1.011,11.27,3.037,3.397,2.03,6.094,4.945,8.091,8.749h.189v-33.486h6.266v58.647c0,3.989.138,7.109.419,9.353.281,2.244.705,4.521,1.262,6.828h-6.358c0-.126-.017-.235-.046-.327-.034-.092-.046-.172-.046-.235-.44-1.745-.751-3.397-.935-4.958-.189-1.556-.252-3.179-.189-4.861h-.189c-2.055,3.867-4.832,6.828-8.321,8.883-3.494,2.059-7.331,3.087-11.509,3.087-4.551,0-8.653-1.17-12.297-3.506ZM1178.133,448.685c2.869-1.841,5.142-4.4,6.828-7.671,1.682-3.276,2.525-7,2.525-11.177s-.843-7.906-2.525-11.177c-1.686-3.276-3.959-5.813-6.828-7.625-2.869-1.808-6.019-2.714-9.449-2.714-3.49,0-6.61.935-9.353,2.806-2.743,1.871-4.911,4.446-6.501,7.717-1.59,3.276-2.382,6.971-2.382,11.085,0,4.056.793,7.717,2.382,10.989,1.59,3.276,3.775,5.847,6.547,7.717,2.777,1.871,5.88,2.806,9.307,2.806s6.581-.919,9.449-2.756Z"/>
+    <path class="sp-cls-2" d="M1218.729,453.827c-3.867-2.273-6.891-5.486-9.076-9.634-2.181-4.148-3.271-8.9-3.271-14.264,0-5.297,1.074-10.024,3.225-14.172,2.152-4.144,5.159-7.386,9.026-9.726,3.867-2.34,8.233-3.506,13.098-3.506,3.741,0,7.403.78,10.989,2.336,3.586,1.56,6.576,4.274,8.98,8.137,2.399,3.867,3.603,9.013,3.603,15.435v2.902h-42.185c.122,4.052.994,7.608,2.617,10.662,1.619,3.058,3.85,5.394,6.69,7.017,2.835,1.619,6.061,2.428,9.68,2.428,4.24,0,7.902-1.212,10.989-3.645,3.087-2.433,5.41-5.549,6.971-9.357l5.985,2.152c-1.934,5.18-5.05,9.248-9.353,12.209-4.303,2.961-9.261,4.442-14.873,4.442-4.865,0-9.231-1.137-13.094-3.414ZM1245.853,415.475c-1.623-2.462-3.695-4.236-6.22-5.331-2.525-1.09-5.222-1.636-8.091-1.636-3.179,0-6.065.7-8.653,2.105-2.588,1.401-4.677,3.351-6.266,5.847-1.59,2.491-2.634,5.331-3.133,8.51h34.984c-.126-3.867-.998-7.029-2.621-9.496Z"/>
+    <path class="sp-cls-2" d="M1300.618,453.735c-3.649-2.34-6.501-5.582-8.56-9.73-2.059-4.144-3.087-8.837-3.087-14.076,0-5.36,1.044-10.116,3.133-14.264,2.089-4.148,4.974-7.373,8.653-9.68,3.678-2.307,7.763-3.46,12.255-3.46,4.114,0,7.872,1.011,11.27,3.037,3.397,2.03,6.094,4.945,8.091,8.749h.189v-33.486h6.266v58.647c0,3.989.138,7.109.419,9.353.281,2.244.705,4.521,1.262,6.828h-6.358c0-.126-.017-.235-.046-.327-.034-.092-.046-.172-.046-.235-.44-1.745-.751-3.397-.935-4.958-.189-1.556-.252-3.179-.189-4.861h-.189c-2.055,3.867-4.832,6.828-8.321,8.883-3.494,2.059-7.331,3.087-11.509,3.087-4.551,0-8.653-1.17-12.297-3.506ZM1323.3,448.685c2.869-1.841,5.142-4.4,6.828-7.671,1.682-3.276,2.525-7,2.525-11.177s-.843-7.906-2.525-11.177c-1.686-3.276-3.959-5.813-6.828-7.625-2.869-1.808-6.019-2.714-9.449-2.714-3.49,0-6.61.935-9.353,2.806-2.743,1.871-4.911,4.446-6.501,7.717-1.59,3.276-2.382,6.971-2.382,11.085,0,4.056.793,7.717,2.382,10.989,1.59,3.276,3.775,5.847,6.547,7.717,2.777,1.871,5.88,2.806,9.307,2.806s6.581-.919,9.449-2.756Z"/>
+    <path class="sp-cls-2" d="M1355.054,389.379c-1.028-1.028-1.543-2.29-1.543-3.787,0-.872.235-1.715.7-2.525.47-.809,1.107-1.451,1.921-1.917.809-.47,1.711-.705,2.709-.705,1.434,0,2.651.516,3.649,1.543.998,1.032,1.497,2.231,1.497,3.603,0,.998-.235,1.904-.7,2.714-.47.809-1.095,1.447-1.871,1.917-.78.47-1.64.7-2.575.7-1.493,0-2.756-.512-3.787-1.543ZM1355.57,404.017h6.266v51.635h-6.266v-51.635Z"/>
+    <path class="sp-cls-2" d="M1386.012,474.173c-3.959-2.37-6.908-6.207-8.837-11.505l5.796-2.059c1.313,3.678,3.401,6.53,6.27,8.56,2.865,2.026,6.606,3.037,11.224,3.037,3.242,0,6.14-.638,8.699-1.917,2.554-1.279,4.643-3.46,6.266-6.547,1.619-3.087,2.491-7.218,2.617-12.394v-7.671h-.185c-1.996,3.867-4.693,6.816-8.091,8.841-3.401,2.026-7.189,3.041-11.366,3.041-4.551,0-8.669-1.153-12.348-3.46-3.678-2.307-6.53-5.503-8.556-9.588-2.03-4.085-3.041-8.623-3.041-13.61,0-5.054,1.044-9.571,3.133-13.564,2.089-3.989,4.958-7.122,8.606-9.399,3.645-2.277,7.717-3.414,12.205-3.414,4.24,0,8.074,1.044,11.505,3.133s6.14,5.096,8.137,9.026h.189v-10.666h6.082v45.272c0,9.978-2.122,17.213-6.363,21.701-4.24,4.492-10.07,6.736-17.49,6.736-5.675,0-10.494-1.183-14.453-3.552ZM1408.79,446.999c2.865-1.837,5.142-4.349,6.828-7.529,1.682-3.179,2.525-6.736,2.525-10.666s-.843-7.449-2.525-10.569c-1.686-3.116-3.964-5.549-6.828-7.294-2.869-1.745-6.019-2.621-9.449-2.621s-6.535.906-9.307,2.714c-2.777,1.812-4.958,4.291-6.547,7.436-1.59,3.15-2.386,6.627-2.386,10.431,0,3.867.797,7.39,2.386,10.569,1.59,3.179,3.771,5.692,6.547,7.529,2.772,1.841,5.876,2.76,9.307,2.76s6.581-.919,9.449-2.76Z"/>
+    <path class="sp-cls-2" d="M1440.452,389.379c-1.028-1.028-1.543-2.29-1.543-3.787,0-.872.235-1.715.7-2.525.47-.809,1.107-1.451,1.921-1.917.809-.47,1.711-.705,2.709-.705,1.434,0,2.651.516,3.649,1.543.998,1.032,1.497,2.231,1.497,3.603,0,.998-.235,1.904-.7,2.714-.47.809-1.095,1.447-1.871,1.917-.78.47-1.64.7-2.575.7-1.493,0-2.756-.512-3.787-1.543ZM1440.968,404.017h6.266v51.635h-6.266v-51.635Z"/>
+    <path class="sp-cls-2" d="M1471.04,454.481c-1.841-1.837-2.978-3.926-3.414-6.266-.436-2.34-.654-5.033-.654-8.091v-30.492h-10.288v-5.616h10.288v-15.338h6.266v15.338h15.808v5.616h-15.808v28.902c0,2.617.126,4.802.373,6.547s.919,3.259,2.013,4.538c1.09,1.275,2.76,1.917,5.004,1.917,2.491,0,5.142-.843,7.948-2.525l.47-.281v5.985c-1.309.809-2.793,1.434-4.442,1.871-1.653.436-3.322.654-5.004.654-3.871,0-6.723-.919-8.56-2.76Z"/>
+    <path class="sp-cls-2" d="M1503.776,455.744c-2.462-.994-4.429-2.508-5.893-4.534-1.464-2.026-2.198-4.505-2.198-7.436,0-3.12.826-5.721,2.479-7.81,1.653-2.089,3.85-3.758,6.593-5.008,2.747-1.246,5.926-2.244,9.542-2.99.751-.189,1.841-.373,3.276-.562,3.305-.625,5.813-1.183,7.529-1.686,1.715-.495,3.07-1.262,4.068-2.29.998-1.028,1.497-2.445,1.497-4.257,0-1.929-.545-3.771-1.636-5.515-1.095-1.749-2.638-3.137-4.63-4.165-1.996-1.028-4.274-1.543-6.828-1.543-3.431,0-6.363.969-8.795,2.902-2.428,1.934-4.177,4.58-5.234,7.948l-6.082-2.152c1.497-4.677,4.131-8.2,7.902-10.569,3.775-2.37,7.998-3.552,12.675-3.552,3.305,0,6.421.608,9.353,1.824,2.932,1.212,5.301,3.116,7.109,5.704,1.808,2.588,2.714,5.813,2.714,9.68v21.139c.063,3.494.218,6.27.47,8.325.247,2.059.654,4.211,1.216,6.455h-6.363c-.436-1.808-.747-3.54-.935-5.192-.189-1.653-.281-3.506-.281-5.566h-.185c-1.749,3.741-4.245,6.736-7.487,8.98-3.242,2.248-7.109,3.368-11.597,3.368-3.058,0-5.817-.499-8.279-1.497ZM1522.251,449.385c2.68-1.808,4.769-4.052,6.266-6.736,1.497-2.68,2.244-5.239,2.244-7.671v-7.013c-1.12.809-2.101,1.434-2.944,1.871-.843.436-2.013.839-3.511,1.216-.809.247-2.743.684-5.796,1.309-2.932.562-5.49,1.2-7.671,1.917-2.185.717-4.114,1.824-5.801,3.322-1.682,1.497-2.525,3.46-2.525,5.893,0,2.617.952,4.71,2.852,6.266,1.904,1.56,4.505,2.34,7.814,2.34,3.364,0,6.388-.906,9.072-2.714Z"/>
+    <path class="sp-cls-2" d="M1553.209,380.823h6.266v74.828h-6.266v-74.828Z"/>
+  </g>
+</svg></div>
+    <div class="ss">Gestão contínua de saúde ocupacional</div>
+    <div class="pl-label">Selecione seu perfil</div>
+    <div class="pcards">
+      <div class="pcard" onclick="abrirOnboarding()"><div class="pi pi-c">🧑‍🏭</div><div class="pinfo"><div class="pnome">Colaborador</div><div class="pdesc">Bem-estar, carteirinha e benefícios</div></div><div class="parr">›</div></div>
+      <div class="pcard" onclick="entrar('rh')"><div class="pi pi-r">👔</div><div class="pinfo"><div class="pnome">RH / Gestor</div><div class="pdesc">Gestão da empresa e equipe</div></div><div class="parr">›</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="onboarding" style="position:fixed;inset:0;background:linear-gradient(160deg,#163266,#204989);z-index:500;max-width:430px;margin:0 auto;overflow:hidden;display:none;flex-direction:column">
+  <div style="flex:0 0 auto;padding:52px 20px 24px;text-align:center">
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;color:#fff">Capital <span style="color:#3BD77E">Saude</span></div>
+    <div style="font-size:12px;color:rgba(255,255,255,.55);margin-top:4px">Gestao continua de saude ocupacional</div>
+  </div>
+  <div style="flex:1;background:#f8fafc;border-radius:24px 24px 0 0;padding:24px 20px;overflow-y:auto">
+    <div id="ob-step1">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:#1e293b;margin-bottom:6px">Primeiro acesso</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:20px;line-height:1.5">Digite seu CPF para identificarmos seu cadastro.</div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">CPF <span style="color:#ef4444">*</span></label>
+        <input type="text" id="ob-cpf" placeholder="000.000.000-00" maxlength="14" oninput="obMaskCPF(this)" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif">
+        <div id="ob-cpf-load" style="display:none;font-size:11px;color:#94a3b8;margin-top:4px">Buscando cadastro...</div>
+        <div id="ob-cpf-erro" style="display:none;font-size:11px;color:#ef4444;margin-top:4px"></div>
+      </div>
+      <div id="ob-nome-box" style="display:none;background:rgba(59,215,126,.08);border:1px solid rgba(59,215,126,.2);border-radius:12px;padding:12px;margin-bottom:14px">
+        <div id="ob-nome-txt" style="font-size:14px;font-weight:600;color:#16a34a"></div>
+        <div id="ob-emp-txt" style="font-size:11px;color:#94a3b8;margin-top:2px"></div>
+      </div>
+      <button id="ob-btn-cpf" style="display:none;width:100%;padding:13px;background:#204989;color:#fff;border:none;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer" onclick="obContinuar()">Continuar</button>
+      <button style="width:100%;padding:12px;background:transparent;color:#204989;border:1.5px solid #204989;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px" onclick="fecharOnboarding()">Voltar</button>
+    </div>
+    <div id="ob-step2" style="display:none">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:#1e293b;margin-bottom:6px">Complete seu cadastro</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:16px;line-height:1.5">Preencha os dados para finalizar seu acesso.</div>
+      <div id="ob-cad-nome-box" style="background:rgba(59,215,126,.08);border:1px solid rgba(59,215,126,.2);border-radius:12px;padding:12px;margin-bottom:16px">
+        <div id="ob-cad-nome" style="font-size:14px;font-weight:600;color:#16a34a"></div>
+        <div id="ob-cad-emp" style="font-size:11px;color:#94a3b8;margin-top:2px"></div>
+      </div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">Atividade principal <span style="color:#ef4444">*</span></label><select id="ob-atv" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif;appearance:none;cursor:pointer">
+  <option value="">Selecione sua atividade...</option>
+  <optgroup id="ob-atv-group" label="Atividades do seu setor">
+  </optgroup>
+  <option value="outro">Outra atividade</option>
+</select>
+<div id="ob-atv-outro" style="display:none;margin-top:8px"><input type="text" id="ob-atv-txt" placeholder="Descreva sua atividade" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif" oninput="obCheckOutro()"></div>
+<script>document.getElementById('ob-atv').onchange=function(){document.getElementById('ob-atv-outro').style.display=this.value==='Outro — descrever no campo abaixo'?'block':'none';}</script></div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">E-mail <span style="color:#ef4444">*</span></label><input type="email" id="ob-email" placeholder="seu@email.com" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">Confirmar e-mail <span style="color:#ef4444">*</span></label><input type="email" id="ob-email2" placeholder="seu@email.com" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">WhatsApp <span style="color:#ef4444">*</span></label><input type="tel" id="ob-wpp" placeholder="(00) 00000-0000" maxlength="15" oninput="obMaskWpp(this)" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">Confirmar WhatsApp <span style="color:#ef4444">*</span></label><input type="tel" id="ob-wpp2" placeholder="(00) 00000-0000" maxlength="15" oninput="obMaskWpp(this)" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">Senha <span style="color:#ef4444">*</span></label><input type="password" id="ob-senha" placeholder="Minimo 6 caracteres" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">Confirmar senha <span style="color:#ef4444">*</span></label><input type="password" id="ob-senha2" placeholder="Repita a senha" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div id="ob-cad-erro" style="display:none;font-size:11px;color:#ef4444;padding:10px;background:rgba(239,68,68,.06);border-radius:12px;margin-bottom:8px"></div>
+      <button style="width:100%;padding:13px;background:#204989;color:#fff;border:none;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px" onclick="obFinalizar()">Finalizar e entrar</button>
+      <button style="width:100%;padding:12px;background:transparent;color:#204989;border:1.5px solid #204989;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px" onclick="obVoltarStep()">Voltar</button>
+    </div>
+    <div id="ob-step3" style="display:none">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:#1e293b;margin-bottom:6px">Bem-vindo de volta!</div>
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:16px;line-height:1.5">Digite sua senha para entrar.</div>
+      <div id="ob-login-nome-box" style="background:rgba(59,215,126,.08);border:1px solid rgba(59,215,126,.2);border-radius:12px;padding:12px;margin-bottom:16px">
+        <div id="ob-login-nome" style="font-size:14px;font-weight:600;color:#16a34a"></div>
+        <div id="ob-login-emp" style="font-size:11px;color:#94a3b8;margin-top:2px"></div>
+      </div>
+      <div style="margin-bottom:12px"><label style="font-size:12px;font-weight:600;color:#475569;margin-bottom:5px;display:block">Senha <span style="color:#ef4444">*</span></label><input type="password" id="ob-login-senha" placeholder="Sua senha" style="width:100%;padding:13px;border:1.5px solid #e2e8f0;border-radius:16px;font-size:14px;color:#1e293b;background:#f8fafc;font-family:'DM Sans',sans-serif"></div>
+      <div id="ob-login-erro" style="display:none;font-size:11px;color:#ef4444;margin-top:4px"></div>
+      <button style="width:100%;padding:13px;background:#204989;color:#fff;border:none;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px" onclick="obLogin()">Entrar</button>
+      <button style="width:100%;padding:12px;background:transparent;color:#204989;border:1.5px solid #204989;border-radius:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px" onclick="obVoltarStep()">Usar outro CPF</button>
+    </div>
+  </div>
+</div>
+<div id="app" class="screen">
+  <div class="hdr">
+    <div class="htop">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="hback" id="hback-btn" onclick="voltarTab()">‹</button>
+        <div style="display:flex;align-items:center"><svg style="height:22px;width:auto" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1138.94 499.241">
+  <defs>
+    <style>
+      .h6-cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .h6-cls-2 {
+        fill: #fff;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="859.53" y1="222.559" x2="978.386" y2="222.559" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3bd77e"/>
+      <stop offset=".5" stop-color="#83eda3"/>
+      <stop offset="1" stop-color="#adf683"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path class="h6-cls-2" d="M50,218.264c0-52.197,36.166-88.023,89.73-88.023,24.565,0,45.717,8.531,63.798,25.933l-23.198,24.905c-10.238-10.238-24.905-16.039-39.92-16.039-30.701,0-52.197,21.835-52.197,53.224,0,31.729,21.151,53.224,52.197,53.224,16.378,0,31.389-6.14,41.623-17.402l23.542,25.589c-18.765,18.081-39.576,26.612-65.505,26.612-54.587,0-90.07-34.799-90.07-88.023Z"/>
+    <path class="h6-cls-2" d="M392.212,133.995v168.539h-34.115l-.344-22.519c-12.964,16.378-35.479,26.272-61.407,26.272-49.47,0-83.59-36.166-83.59-88.023s34.12-88.023,83.59-88.023c26.268,0,48.443,9.894,61.407,26.272l.344-22.519h34.115ZM354.003,218.264c0-31.389-21.155-53.224-51.517-53.224s-51.517,21.835-51.517,53.224,21.151,53.224,51.517,53.224,51.517-21.835,51.517-53.224Z"/>
+    <path class="h6-cls-2" d="M609.55,218.264c0,51.857-34.115,88.023-83.586,88.023-23.542,0-44.353-8.187-57.657-22.179v74.736h-38.213v-224.85h34.12l.34,22.519c12.964-16.378,35.483-26.272,61.411-26.272,49.47,0,83.586,36.166,83.586,88.023ZM571.341,218.264c0-31.389-21.155-53.224-51.517-53.224-30.022,0-51.517,21.835-51.517,53.224s21.495,53.224,51.517,53.224c30.362,0,51.517-21.835,51.517-53.224Z"/>
+    <path class="h6-cls-2" d="M631.401,85.548c0-13.988,10.238-23.882,24.226-23.882,14.667,0,24.905,9.894,24.905,23.882,0,13.308-10.238,23.202-24.905,23.202-13.988,0-24.226-9.894-24.226-23.202ZM636.518,133.995h38.213v168.539h-38.213v-168.539Z"/>
+    <path class="h6-cls-2" d="M824.51,296.733c-12.964,5.801-23.882,8.187-37.869,8.187-34.799,0-55.271-20.128-55.271-60.384v-78.129h-31.729v-32.413h31.729v-44.01l37.869-4.094v48.103h48.447v32.413h-48.447v78.129c0,17.058,7.847,26.608,23.542,26.608,6.824,0,14.671-2.047,21.151-5.117l10.578,30.706Z"/>
+    <path class="h6-cls-2" d="M1012.845,133.995v168.539h-34.115l-.344-22.519c-12.964,16.378-35.479,26.272-61.407,26.272-49.47,0-83.59-36.166-83.59-88.023s34.12-88.023,83.59-88.023c26.268,0,48.443,9.894,61.407,26.272l.344-22.519h34.115Z"/>
+    <path class="h6-cls-2" d="M1050.727,63.713h38.213v238.821h-38.213V63.713Z"/>
+  </g>
+  <g>
+    <path class="h6-cls-2" d="M521.554,413.115c-3.867-2.647-6.484-6.157-7.856-10.523l5.893-1.871c1.309,3.246,3.397,5.88,6.266,7.906,2.869,2.026,5.922,3.041,9.168,3.041,1.619,0,3.334-.298,5.142-.889s3.351-1.59,4.63-2.995c1.279-1.401,1.917-3.225,1.917-5.473,0-1.745-.453-3.179-1.355-4.299-.906-1.124-2.059-2.026-3.46-2.714-1.405-.688-3.133-1.309-5.192-1.871-.247-.063-.407-.109-.466-.143-.063-.029-.189-.075-.377-.138l-4.958-1.405c-.126,0-.218-.029-.277-.092-2.374-.621-4.584-1.451-6.644-2.479-2.059-1.028-3.88-2.554-5.473-4.584-1.59-2.026-2.382-4.63-2.382-7.81,0-3.053.826-5.675,2.479-7.856,1.653-2.181,3.787-3.821,6.405-4.911,2.621-1.09,5.335-1.636,8.141-1.636,4.303,0,8.137,1.2,11.505,3.599,3.368,2.403,5.641,5.41,6.828,9.026l-6.082,2.059c-.935-2.68-2.508-4.895-4.723-6.639-2.215-1.745-4.911-2.621-8.091-2.621-1.934,0-3.666.344-5.192,1.028-1.527.688-2.726,1.669-3.599,2.949-.877,1.279-1.313,2.76-1.313,4.442,0,2.869,1.09,5.054,3.276,6.547,2.181,1.497,4.987,2.747,8.418,3.741.063,0,.109.017.138.05.034.029.08.046.143.046l4.865,1.401c.122,0,.247.034.373.096,2.554.747,4.769,1.573,6.639,2.479,1.871.902,3.511,2.244,4.911,4.022,1.405,1.774,2.105,4.068,2.105,6.874,0,2.869-.78,5.503-2.34,7.902-1.556,2.403-3.741,4.291-6.547,5.658-2.806,1.371-5.985,2.059-9.542,2.059-5.05,0-9.508-1.325-13.375-3.976Z"/>
+    <path class="h6-cls-2" d="M569.397,415.593c-2.462-.994-4.429-2.508-5.893-4.534-1.464-2.026-2.198-4.505-2.198-7.436,0-3.12.826-5.721,2.479-7.81,1.653-2.089,3.85-3.758,6.593-5.008,2.747-1.246,5.926-2.244,9.542-2.99.751-.189,1.841-.373,3.276-.562,3.305-.625,5.813-1.183,7.529-1.686,1.715-.495,3.07-1.262,4.068-2.29.998-1.028,1.497-2.445,1.497-4.257,0-1.929-.545-3.771-1.636-5.515-1.095-1.749-2.638-3.137-4.63-4.165-1.996-1.028-4.274-1.543-6.828-1.543-3.431,0-6.363.969-8.795,2.902-2.428,1.934-4.177,4.58-5.234,7.948l-6.082-2.152c1.497-4.677,4.131-8.2,7.902-10.569,3.775-2.37,7.998-3.552,12.675-3.552,3.305,0,6.421.608,9.353,1.824,2.932,1.212,5.301,3.116,7.109,5.704,1.808,2.588,2.714,5.813,2.714,9.68v21.139c.063,3.494.218,6.27.47,8.325.247,2.059.654,4.211,1.216,6.455h-6.363c-.436-1.808-.747-3.54-.935-5.192-.189-1.653-.281-3.506-.281-5.566h-.185c-1.749,3.741-4.245,6.736-7.487,8.98-3.242,2.248-7.109,3.368-11.597,3.368-3.058,0-5.817-.499-8.279-1.497ZM587.872,409.235c2.68-1.808,4.769-4.052,6.266-6.736,1.497-2.68,2.244-5.239,2.244-7.671v-7.013c-1.12.809-2.101,1.434-2.944,1.871-.843.436-2.013.839-3.511,1.216-.809.247-2.743.684-5.796,1.309-2.932.562-5.49,1.2-7.671,1.917-2.185.717-4.114,1.824-5.801,3.322-1.682,1.497-2.525,3.46-2.525,5.893,0,2.617.952,4.71,2.852,6.266,1.904,1.56,4.505,2.34,7.814,2.34,3.364,0,6.388-.906,9.072-2.714Z"/>
+    <path class="h6-cls-2" d="M627.486,415.031c-2.777-1.367-5.037-3.599-6.782-6.686-1.749-3.087-2.621-7.122-2.621-12.113v-32.366h6.27v29.934c0,6.111,1.321,10.557,3.972,13.329,2.651,2.777,5.943,4.161,9.869,4.161,3.305,0,6.157-.885,8.56-2.663,2.399-1.778,4.24-4.085,5.52-6.92,1.275-2.839,1.917-5.721,1.917-8.653v-29.187h6.266v35.453c0,3.989.143,7.109.419,9.353.281,2.244.705,4.521,1.267,6.828h-6.363c-.063-.247-.126-.436-.189-.562-.373-1.745-.654-3.351-.839-4.815-.189-1.468-.281-2.856-.281-4.165h-.189c-1.871,3.741-4.303,6.535-7.294,8.372-2.995,1.841-6.455,2.76-10.385,2.76-3.305,0-6.346-.688-9.118-2.059ZM635.577,357.135l11.224-17.867h8.606l-14.218,17.867h-5.612Z"/>
+    <path class="h6-cls-2" d="M684.917,413.584c-3.649-2.34-6.501-5.582-8.56-9.73-2.059-4.144-3.087-8.837-3.087-14.076,0-5.36,1.044-10.116,3.133-14.264,2.089-4.148,4.974-7.373,8.653-9.68,3.678-2.307,7.763-3.46,12.255-3.46,4.114,0,7.872,1.011,11.27,3.037,3.397,2.03,6.094,4.945,8.091,8.749h.189v-33.486h6.266v58.647c0,3.989.138,7.109.419,9.353.281,2.244.705,4.521,1.262,6.828h-6.358c0-.126-.017-.235-.046-.327-.034-.092-.046-.172-.046-.235-.44-1.745-.751-3.397-.935-4.958-.189-1.556-.252-3.179-.189-4.861h-.189c-2.055,3.867-4.832,6.828-8.321,8.883-3.494,2.059-7.331,3.087-11.509,3.087-4.551,0-8.653-1.17-12.297-3.506ZM707.599,408.535c2.869-1.841,5.142-4.4,6.828-7.671,1.682-3.276,2.525-7,2.525-11.177s-.843-7.906-2.525-11.177c-1.686-3.276-3.959-5.813-6.828-7.625-2.869-1.808-6.019-2.714-9.449-2.714-3.49,0-6.61.935-9.353,2.806-2.743,1.871-4.911,4.446-6.501,7.717-1.59,3.276-2.382,6.971-2.382,11.085,0,4.056.793,7.717,2.382,10.989,1.59,3.276,3.775,5.847,6.547,7.717,2.777,1.871,5.88,2.806,9.307,2.806s6.581-.919,9.449-2.756Z"/>
+    <path class="h6-cls-2" d="M748.195,413.677c-3.867-2.273-6.891-5.486-9.076-9.634-2.181-4.148-3.271-8.9-3.271-14.264,0-5.297,1.074-10.024,3.225-14.172,2.152-4.144,5.159-7.386,9.026-9.726,3.867-2.34,8.233-3.506,13.098-3.506,3.741,0,7.403.78,10.989,2.336,3.586,1.56,6.576,4.274,8.98,8.137,2.399,3.867,3.603,9.013,3.603,15.435v2.902h-42.185c.122,4.052.994,7.608,2.617,10.662,1.619,3.058,3.85,5.394,6.69,7.017,2.835,1.619,6.061,2.428,9.68,2.428,4.24,0,7.902-1.212,10.989-3.645,3.087-2.433,5.41-5.549,6.971-9.357l5.985,2.152c-1.934,5.18-5.05,9.248-9.353,12.209-4.303,2.961-9.261,4.442-14.873,4.442-4.865,0-9.231-1.137-13.094-3.414ZM775.318,375.325c-1.623-2.462-3.695-4.236-6.22-5.331-2.525-1.09-5.222-1.636-8.091-1.636-3.179,0-6.065.7-8.653,2.105-2.588,1.401-4.677,3.351-6.266,5.847-1.59,2.491-2.634,5.331-3.133,8.51h34.984c-.126-3.867-.998-7.029-2.621-9.496Z"/>
+    <path class="h6-cls-2" d="M830.084,413.584c-3.649-2.34-6.501-5.582-8.56-9.73-2.059-4.144-3.087-8.837-3.087-14.076,0-5.36,1.044-10.116,3.133-14.264,2.089-4.148,4.974-7.373,8.653-9.68,3.678-2.307,7.763-3.46,12.255-3.46,4.114,0,7.872,1.011,11.27,3.037,3.397,2.03,6.094,4.945,8.091,8.749h.189v-33.486h6.266v58.647c0,3.989.138,7.109.419,9.353.281,2.244.705,4.521,1.262,6.828h-6.358c0-.126-.017-.235-.046-.327-.034-.092-.046-.172-.046-.235-.44-1.745-.751-3.397-.935-4.958-.189-1.556-.252-3.179-.189-4.861h-.189c-2.055,3.867-4.832,6.828-8.321,8.883-3.494,2.059-7.331,3.087-11.509,3.087-4.551,0-8.653-1.17-12.297-3.506ZM852.766,408.535c2.869-1.841,5.142-4.4,6.828-7.671,1.682-3.276,2.525-7,2.525-11.177s-.843-7.906-2.525-11.177c-1.686-3.276-3.959-5.813-6.828-7.625-2.869-1.808-6.019-2.714-9.449-2.714-3.49,0-6.61.935-9.353,2.806-2.743,1.871-4.911,4.446-6.501,7.717-1.59,3.276-2.382,6.971-2.382,11.085,0,4.056.793,7.717,2.382,10.989,1.59,3.276,3.775,5.847,6.547,7.717,2.777,1.871,5.88,2.806,9.307,2.806s6.581-.919,9.449-2.756Z"/>
+    <path class="h6-cls-2" d="M884.52,349.229c-1.028-1.028-1.543-2.29-1.543-3.787,0-.872.235-1.715.7-2.525.47-.809,1.107-1.451,1.921-1.917.809-.47,1.711-.705,2.709-.705,1.434,0,2.651.516,3.649,1.543.998,1.032,1.497,2.231,1.497,3.603,0,.998-.235,1.904-.7,2.714-.47.809-1.095,1.447-1.871,1.917-.78.47-1.64.7-2.575.7-1.493,0-2.756-.512-3.787-1.543ZM885.036,363.867h6.266v51.635h-6.266v-51.635Z"/>
+    <path class="h6-cls-2" d="M915.478,434.023c-3.959-2.37-6.908-6.207-8.837-11.505l5.796-2.059c1.313,3.678,3.401,6.53,6.27,8.56,2.865,2.026,6.606,3.037,11.224,3.037,3.242,0,6.14-.638,8.699-1.917,2.554-1.279,4.643-3.46,6.266-6.547,1.619-3.087,2.491-7.218,2.617-12.394v-7.671h-.185c-1.996,3.867-4.693,6.816-8.091,8.841-3.401,2.026-7.189,3.041-11.366,3.041-4.551,0-8.669-1.153-12.348-3.46-3.678-2.307-6.53-5.503-8.556-9.588-2.03-4.085-3.041-8.623-3.041-13.61,0-5.054,1.044-9.571,3.133-13.564,2.089-3.989,4.958-7.122,8.606-9.399,3.645-2.277,7.717-3.414,12.205-3.414,4.24,0,8.074,1.044,11.505,3.133,3.431,2.089,6.14,5.096,8.137,9.026h.189v-10.666h6.082v45.272c0,9.978-2.122,17.213-6.363,21.701-4.24,4.492-10.07,6.736-17.49,6.736-5.675,0-10.494-1.183-14.453-3.552ZM938.256,406.849c2.865-1.837,5.142-4.349,6.828-7.529,1.682-3.179,2.525-6.736,2.525-10.666s-.843-7.449-2.525-10.569c-1.686-3.116-3.964-5.549-6.828-7.294-2.869-1.745-6.019-2.621-9.449-2.621s-6.535.906-9.307,2.714c-2.777,1.812-4.958,4.291-6.547,7.436-1.59,3.15-2.386,6.627-2.386,10.431,0,3.867.797,7.39,2.386,10.569s3.771,5.692,6.547,7.529c2.772,1.841,5.876,2.76,9.307,2.76s6.581-.919,9.449-2.76Z"/>
+    <path class="h6-cls-2" d="M969.918,349.229c-1.028-1.028-1.543-2.29-1.543-3.787,0-.872.235-1.715.7-2.525.47-.809,1.107-1.451,1.921-1.917.809-.47,1.711-.705,2.709-.705,1.434,0,2.651.516,3.649,1.543.998,1.032,1.497,2.231,1.497,3.603,0,.998-.235,1.904-.7,2.714-.47.809-1.095,1.447-1.871,1.917-.78.47-1.64.7-2.575.7-1.493,0-2.756-.512-3.787-1.543ZM970.434,363.867h6.266v51.635h-6.266v-51.635Z"/>
+    <path class="h6-cls-2" d="M1000.506,414.331c-1.841-1.837-2.978-3.926-3.414-6.266-.436-2.34-.654-5.033-.654-8.091v-30.492h-10.288v-5.616h10.288v-15.338h6.266v15.338h15.808v5.616h-15.808v28.902c0,2.617.126,4.802.373,6.547s.919,3.259,2.013,4.538c1.09,1.275,2.76,1.917,5.004,1.917,2.491,0,5.142-.843,7.948-2.525l.47-.281v5.985c-1.309.809-2.793,1.434-4.442,1.871-1.653.436-3.322.654-5.004.654-3.871,0-6.723-.919-8.56-2.76Z"/>
+    <path class="h6-cls-2" d="M1033.242,415.593c-2.462-.994-4.429-2.508-5.893-4.534-1.464-2.026-2.198-4.505-2.198-7.436,0-3.12.826-5.721,2.479-7.81,1.653-2.089,3.85-3.758,6.593-5.008,2.747-1.246,5.926-2.244,9.542-2.99.751-.189,1.841-.373,3.276-.562,3.305-.625,5.813-1.183,7.529-1.686,1.715-.495,3.07-1.262,4.068-2.29.998-1.028,1.497-2.445,1.497-4.257,0-1.929-.545-3.771-1.636-5.515-1.095-1.749-2.638-3.137-4.63-4.165-1.996-1.028-4.274-1.543-6.828-1.543-3.431,0-6.363.969-8.795,2.902-2.428,1.934-4.177,4.58-5.234,7.948l-6.082-2.152c1.497-4.677,4.131-8.2,7.902-10.569,3.775-2.37,7.998-3.552,12.675-3.552,3.305,0,6.421.608,9.353,1.824,2.932,1.212,5.301,3.116,7.109,5.704,1.808,2.588,2.714,5.813,2.714,9.68v21.139c.063,3.494.218,6.27.47,8.325.247,2.059.654,4.211,1.216,6.455h-6.363c-.436-1.808-.747-3.54-.935-5.192-.189-1.653-.281-3.506-.281-5.566h-.185c-1.749,3.741-4.245,6.736-7.487,8.98-3.242,2.248-7.109,3.368-11.597,3.368-3.058,0-5.817-.499-8.279-1.497ZM1051.717,409.235c2.68-1.808,4.769-4.052,6.266-6.736,1.497-2.68,2.244-5.239,2.244-7.671v-7.013c-1.12.809-2.101,1.434-2.944,1.871-.843.436-2.013.839-3.511,1.216-.809.247-2.743.684-5.796,1.309-2.932.562-5.49,1.2-7.671,1.917-2.185.717-4.114,1.824-5.801,3.322-1.682,1.497-2.525,3.46-2.525,5.893,0,2.617.952,4.71,2.852,6.266,1.904,1.56,4.505,2.34,7.814,2.34,3.364,0,6.388-.906,9.072-2.714Z"/>
+    <path class="h6-cls-2" d="M1082.674,340.673h6.266v74.828h-6.266v-74.828Z"/>
+  </g>
+  <path class="h6-cls-1" d="M965.798,250.758c-9.432,17.598-28.229,28.915-47.52,28.915-1.076,0-2.152-.035-3.23-.106-20.376-1.348-39.192-15.5-46.822-35.216-1.071-2.767.304-5.878,3.071-6.949,2.765-1.073,5.878.304,6.949,3.071,6.055,15.645,21.48,27.312,37.511,28.372,16.003,1.055,32.694-8.466,40.571-23.163,1.401-2.615,4.657-3.6,7.273-2.197,2.615,1.402,3.599,4.658,2.197,7.273ZM977.956,210.044c-1.192,6.424-5.136,12.324-10.821,16.187-5.29,3.595-11.389,4.95-17.174,3.816-2.912-.571-4.809-3.394-4.238-6.306.571-2.912,3.397-4.809,6.306-4.238,2.946.578,6.168-.189,9.068-2.159,3.279-2.228,5.633-5.69,6.296-9.26,1.33-7.168-2.817-15.307-9.86-19.354-6.734-3.868-15.779-4.267-24.196-1.066-2.024.77-4.013,1.73-5.961,2.878,6.175,9.548,9.809,20.708,10.229,32.22.453,12.415-3.878,22.081-11.884,26.518-2.887,1.6-6.146,2.368-9.452,2.368-6.176,0-12.517-2.679-16.915-7.618-5.62-6.311-7.909-15.676-6.123-25.05,1.359-7.131,4.879-14.202,10.76-21.617,2.602-3.281,5.326-6.219,8.161-8.807-2.125-2.246-4.444-4.299-6.934-6.113-3.53-2.573-12.665-8.265-21.224-5.571-5.398,1.701-11.58,7.901-13.222,17.92-1.442,8.798.499,18.114,2.375,27.123.605,2.905-1.259,5.75-4.164,6.355-2.903.605-5.75-1.26-6.355-4.164-1.98-9.506-4.224-20.28-2.459-31.05,2.093-12.774,10.178-23.149,20.597-26.43,9.313-2.935,20.532-.333,30.78,7.135,3.351,2.442,6.432,5.205,9.211,8.228,2.835-1.768,5.756-3.226,8.76-4.368,11.396-4.333,23.87-3.664,33.368,1.793,11.044,6.345,17.242,18.941,15.072,30.631ZM926.865,223.154c-.334-9.144-3.252-18.22-8.129-26.05-2.177,2.052-4.288,4.366-6.328,6.938-4.776,6.022-7.597,11.566-8.623,16.95-1.148,6.026.228,12.115,3.592,15.892,3.38,3.794,9.271,5.138,13.135,2.998,6.335-3.511,6.466-13.692,6.355-16.729Z"/>
+</svg></div>
+      </div>
+      <button class="hnotif" onclick="toast('Sem novas notificações')">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="ndot"></div>
+      </button>
+    </div>
+    <div class="hgreet">
+      <div class="hname" id="hname">Olá 👋</div>
+      <div class="hsub" id="hdate"></div>
+      <div class="hbadge" id="hbadge"></div>
+    </div>
+  </div>
+  <div class="body" id="body"></div>
+  <nav class="bnav" id="bnav"></nav>
+</div>
+
+<div id="sub-colaboradores" class="subscreen"><div class="sub-header"><button class="sub-back" onclick="fechaSub('sub-colaboradores')">‹</button><div class="sub-title">Colaboradores</div></div><div class="sub-body" id="sub-colaboradores-body"></div></div>
+<div id="sub-pesquisas" class="subscreen"><div class="sub-header"><button class="sub-back" onclick="fechaSub('sub-pesquisas')">‹</button><div class="sub-title">Análises e Pesquisas</div></div><div class="sub-body" id="sub-pesquisas-body"></div></div>
+<div id="sub-riscos" class="subscreen"><div class="sub-header"><button class="sub-back" onclick="fechaSub('sub-riscos')">‹</button><div class="sub-title">Riscos Críticos</div></div><div class="sub-body" id="sub-riscos-body"></div></div>
+<div id="sub-revisao" class="subscreen"><div class="sub-header"><button class="sub-back" onclick="fechaSub('sub-revisao')">‹</button><div class="sub-title">Próxima Revisão Bimestral</div></div><div class="sub-body" id="sub-revisao-body"></div></div>
+<div id="sub-parecer" class="subscreen"><div class="sub-header"><button class="sub-back" onclick="fechaSub('sub-parecer')">‹</button><div class="sub-title">Parecer Semestral</div></div><div class="sub-body" id="sub-parecer-body"></div></div>
+
+<div class="mco-overlay" id="mco-overlay" onclick="fechaMConta()"></div>
+<div class="mconta" id="mconta">
+  <div class="mco-item" onclick="fechaMConta();trocarPerfil()"><span style="font-size:18px">🔄</span>Trocar perfil</div>
+  <div class="mco-item" onclick="fechaMConta();abrirSuporteColab()" id="mco-suporte"><span style="font-size:18px">💬</span>Suporte</div>
+  <div class="mco-item" onclick="fechaMConta();renderTab('denuncia')" id="mco-denuncia"><span style="font-size:18px">📢</span>Canal de denúncias</div>
+  <div class="mco-item" onclick="fechaMConta();trocarPerfil()" style="color:var(--danger)"><span style="font-size:18px">🚪</span>Sair</div>
+</div>
+<div class="toast" id="toast-el"></div>
+
+<script>
+var perfil='',tab='',moodStep=0,moodData={},moodBloqueado=false,denOpt=null,termoAceito=false,provas=[],filmSel=null;
+
+function dataHoje(){var d=new Date(),dias=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'],meses=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];return dias[d.getDay()]+', '+d.getDate()+' de '+meses[d.getMonth()]+' de '+d.getFullYear()}
+
+var TABS={colaborador:[{id:'inicio',icon:'🏠',lbl:'Início'},{id:'carteira',icon:'🪪',lbl:'Carteira'},{id:'beneficios',icon:'🎁',lbl:'Clube Benef.'},{id:'parceiros',icon:'📍',lbl:'Próximos'},],rh:[{id:'inicio',icon:'🏠',lbl:'Início'},{id:'filmagem',icon:'🎥',lbl:'Filmagem'},{id:'mood',icon:'😊',lbl:'Mood'},{id:'graficos',icon:'📈',lbl:'Gráficos'},{id:'pareceres',icon:'📋',lbl:'Pareceres'}]};
+
+var navHistory=[];
+var tabInicial='inicio';
+
+function pushNav(t){
+  if(navHistory.length===0||navHistory[navHistory.length-1]!==t){
+    navHistory.push(t);
+  }
+  var btn=document.getElementById('hback-btn');
+  if(btn) btn.classList.toggle('visible', navHistory.length>1);
+}
+
+function voltarTab(){
+  if(navHistory.length>1){
+    navHistory.pop();
+    var prev=navHistory[navHistory.length-1];
+    navHistory.pop(); // renderTab vai re-adicionar
+    renderTab(prev);
+  }
+}
+
+function entrar(p){perfil=p;tab='inicio';navHistory=[];document.getElementById('splash').classList.remove('active');document.getElementById('app').classList.add('active');document.getElementById('hdate').textContent=dataHoje();if(p==='colaborador'){document.getElementById('hname').textContent='Olá, João Silva 👋';document.getElementById('hbadge').textContent='🧑‍🏭 Colaborador · Produção'}else{document.getElementById('hname').textContent='Olá, Ana Costa 👋';document.getElementById('hbadge').textContent='👔 Gestora RH · Empresa Exemplo'}renderNav();renderTab('inicio')}
+
+function goTab(t){renderTab(t)}
+function renderNav(){
+  var nav=document.getElementById('bnav');
+  nav.innerHTML='';
+  TABS[perfil].forEach(function(t){
+    var btn=document.createElement('button');
+    btn.className='ni'+(t.id===tab?' active':'');
+    btn.innerHTML='<span class="ni-icon">'+t.icon+'</span><span class="ni-lbl">'+t.lbl+'</span>';
+    btn.onclick=function(){if(t.id==='beneficios'){abrirBeneficios()}else{renderTab(t.id)}};
+    nav.appendChild(btn);
+  });
+  var more=document.createElement('button');
+  more.className='ni';
+  more.innerHTML='<span class="ni-icon">⋯</span><span class="ni-lbl">Conta</span>';
+  more.onclick=abreMConta;
+  nav.appendChild(more);
+}
+
+function renderTab(t){tab=t;pushNav(t);renderNav();var b=document.getElementById('body');b.scrollTop=0;if(perfil==='colaborador')colabTab(t,b);else rhTab(t,b)}
+
+function abreSub(id){document.getElementById(id).classList.add('active')}
+function fechaSub(id){document.getElementById(id).classList.remove('active')}
+
+function colabTab(t,b){
+  if(t==='inicio'){
+    b.innerHTML='<div class="mcard fu" id="mood-card"><div class="mctitle">Como estou me sentindo hoje?</div><div class="mcsub" id="mood-sub">'+(moodBloqueado?'Já respondido hoje · Disponível amanhã às 9h':'Resposta anônima · agrupada por setor')+'</div><div id="mood-inline">'+(moodBloqueado?'<div style="background:rgba(255,255,255,.15);border-radius:12px;padding:12px;text-align:center;font-size:13px;color:rgba(255,255,255,.9)">✓ Obrigado! Feedback registrado 💚<br><span style="font-size:11px;opacity:.7">Disponível amanhã às 9h</span></div>':renderMoodInline(0))+'</div></div>'
+    +'<div class="slbl fu2">Pendências</div><div class="card fu2">'
+    +[{cor:'#dc2626',t:'Revisão ergonômica pendente',s:'Prazo: 15 de abril · 5 perguntas',c:'cr',l:'Responder →',fn:"lnk('#pesquisa')"},{cor:'#d97706',t:'Mood tracking de hoje',s:'Responda como está se sentindo',c:'co',l:'Responder →',fn:"scrollToMood()"},{cor:'#204989',t:'Atualizar cadastro',s:'Número de WhatsApp não confirmado',c:'cb',l:'Atualizar →',fn:"toast('Abrindo cadastro...')"}].map(function(p){return'<div class="pend-item" onclick="'+p.fn+'" style="cursor:pointer"><div class="pend-dot" style="background:'+p.cor+'"></div><div class="pend-info"><div class="pend-titulo">'+p.t+'</div><div class="pend-sub">'+p.s+'</div></div><div class="chip '+p.c+'" style="white-space:nowrap">'+p.l+'</div></div>'}).join('')+'</div>'
+    +'<div class="slbl fu3">Acesso rápido</div><div class="agrid fu3">'
+    +'<div class="acard feat" onclick="abrirTele()" style="position:relative"><div class="aic aiw">🩺</div><div><div class="atitle">Telemedicina</div><div class="asub">Consulta online · acesso gratuito</div></div><div onclick="event.stopPropagation();abrirWppTele()" style="position:absolute;top:10px;right:10px;display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(37,211,102,.25);border:1px solid rgba(37,211,102,.5);border-radius:10px;padding:5px 7px;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.886a.5.5 0 00.606.606l6.031-1.471A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.955 0-3.784-.575-5.317-1.562l-.38-.237-3.938.96.979-3.938-.247-.394A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg><span style="font-size:9px;font-weight:700;color:#fff;white-space:nowrap">Suporte</span></div></div>'
+    +'<div class="acard" onclick="renderTab(\'carteira\')"><div class="aic aip">🪪</div><div class="atitle">Carteirinha</div><div class="asub">Meu plano ativo</div></div>'
+    +'<div class="acard" onclick="abrirBeneficios()"><div class="aic aia">🎁</div><div class="atitle">Clube de Benefícios</div><div class="asub">Clube exclusivo</div></div>'
+    +'<div class="acard" onclick="renderTab(\'parceiros\')"><div class="aic ait">📍</div><div class="atitle">Próximos</div><div class="asub">Parceiros no bairro</div></div>'
+    +'<div class="acard" onclick="abrirPlanoFamilia()"><div class="aic" style="background:rgba(236,72,153,.1);font-size:20px">💝</div><div class="atitle">Plano Família</div><div class="asub">Pelo preço do individual</div></div>'
+
+    +'</div>'
+  }
+  else if(t==='carteira'){
+    b.innerHTML='<div class="slbl fu">Minha carteirinha</div><div class="cart-wrap fu"><div class="cart"><div class="cchip"></div><div class="cnome">João Silva</div><div class="cemp">Empresa Exemplo Ltda · Setor Produção</div><div class="cbot"><div><div class="cil">Matrícula</div><div class="civ">ESS-2024-0042</div></div><div><div class="cil">Válido até</div><div class="civ">Dez / 2026</div></div><div class="clogo">Capital<br>Saúde<br>Digital</div></div></div></div>'
+  }
+  else if(t==='beneficios'){
+    var bens=[{i:'🏋️',bg:'rgba(139,92,246,.1)',n:'Academia Smart',d:'3 meses grátis + mensalidade reduzida',t:'🔥 Destaque',tc:'background:rgba(239,68,68,.08);color:#dc2626'},{i:'🍔',bg:'rgba(245,158,11,.1)',n:'iFood Empresas',d:'15% em todos os pedidos',t:'Alimentação',tc:'background:rgba(245,158,11,.1);color:#d97706'},{i:'📚',bg:'rgba(32,73,137,.08)',n:'Cursos Online',d:'Acesso ilimitado',t:'Educação',tc:'background:rgba(32,73,137,.08);color:var(--p)'},{i:'🚗',bg:'rgba(20,184,166,.1)',n:'Seguro Auto',d:'Condições especiais',t:'Seguro',tc:'background:rgba(59,215,126,.1);color:#16a34a'},{i:'✈️',bg:'rgba(59,215,126,.1)',n:'Viagens',d:'Até 40% de desconto',t:'Lazer',tc:'background:rgba(59,215,126,.1);color:#16a34a'},{i:'💆',bg:'rgba(236,72,153,.1)',n:'Spa & Bem-Estar',d:'Sessões de massagem',t:'Saúde',tc:'background:rgba(32,73,137,.08);color:var(--p)'}];
+    b.innerHTML='<div class="slbl fu">Clube de Benefícios</div>'+bens.map(function(x){return'<div class="bitem fu" onclick="lnk(\'#\')"><div class="bico" style="background:'+x.bg+';font-size:22px">'+x.i+'</div><div class="binfo"><div class="bnome">'+x.n+'</div><div class="btipo">'+x.d+'</div></div><div style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;'+x.tc+';white-space:nowrap">'+x.t+'</div></div>'}).join('')
+  }
+  else if(t==='parceiros'){
+    b.innerHTML='<div class="slbl fu">Parceiros próximos</div><div class="info-box fu">📍 Vila Industrial, São Paulo · Localização automática</div>'+[{i:'🏥',n:'UBS Vila Nova',t:'Posto de Saúde · Parceiro',d:'0,6 km'},{i:'💊',n:'Drogaria Popular',t:'Farmácia · 20% off',d:'0,3 km'},{i:'🦷',n:'Clínica Dental',t:'Odontologia · Convênio',d:'1,2 km'},{i:'👁️',n:'Ótica Visão',t:'Ótica · 30% desconto',d:'0,9 km'},{i:'🏋️',n:'Academia Smart',t:'Academia · 3 meses grátis',d:'1,8 km'},{i:'🩺',n:'Clínica São Lucas',t:'Clínica Particular',d:'2,1 km'}].map(function(x){return'<div class="bitem fu" onclick="toast(\'Abrindo no mapa...\')"><div class="bico">'+x.i+'</div><div class="binfo"><div class="bnome">'+x.n+'</div><div class="btipo">'+x.t+'</div></div><div class="bdist">'+x.d+'</div></div>'}).join('')
+  }
+  else if(t==='denuncia'){
+    termoAceito=false;denOpt=null;provas=[];
+    b.innerHTML='<div class="slbl fu">Canal de denúncias</div><div class="dcard fu">'
+    +'<div class="dtitle">Reportar uma situação</div><div class="dsub">Sua identidade está completamente protegida. Nenhuma informação que possa identificá-lo será compartilhada com a empresa.</div>'
+    +'<div class="dopts">'+['⚠️ Risco de acidente não reportado','😤 Assédio moral ou sexual','🔥 Condições de trabalho inseguras','😔 Sobrecarga excessiva de trabalho','🚫 Discriminação ou preconceito','📋 Irregularidade trabalhista'].map(function(o){return'<button class="dopt" onclick="selDen(this)">'+o+'</button>'}).join('')+'</div>'
+    +'<div class="danon" style="margin-top:12px"><div class="achk">✓</div><div class="atxt">Denúncia 100% anônima — identidade protegida por protocolo</div></div>'
+    +'<label class="flbl">Descrição da situação <span style="color:var(--danger)">*</span></label>'
+    +'<textarea class="fta" id="den-desc" placeholder="Descreva o que aconteceu com o máximo de detalhes. Campo obrigatório." rows="4"></textarea>'
+    +'<div id="den-desc-erro" style="display:none;font-size:11px;color:var(--danger);margin-top:4px">⚠ A descrição é obrigatória</div>'
+    +'<label class="flbl">Provas (opcional)</label>'
+    +'<div class="upload-area" onclick="document.getElementById(\'den-upload\').click()"><div style="font-size:28px;margin-bottom:6px">📎</div><div style="font-size:12px;color:var(--g600);font-weight:500">Adicionar documento, foto, vídeo ou áudio</div><div style="font-size:10px;color:var(--g400);margin-top:2px">Opcional · Máximo 50MB por arquivo</div></div>'
+    +'<input type="file" id="den-upload" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx" style="display:none" onchange="addProvas(this)">'
+    +'<div id="den-provas-preview" class="upload-preview"></div>'
+    +'<div class="termo-box">Ao enviar esta denúncia, declaro que as informações prestadas são verídicas e de minha responsabilidade. O envio de denúncias falsas pode sujeitar o denunciante às penalidades dos artigos 138, 139 e 340 do Código Penal Brasileiro.</div>'
+    +'<div class="termo-check" onclick="toggleTermo()"><div class="termo-checkbox" id="termo-check-box"></div><div class="termo-txt">Declaro que as informações são verdadeiras e assumo responsabilidade legal pelo conteúdo desta denúncia.</div></div>'
+    +'<div id="termo-erro" style="display:none;font-size:11px;color:var(--danger);margin-top:4px">⚠ Você precisa aceitar o termo para enviar</div>'
+    +'<button class="btnp" onclick="envDen()">Enviar denúncia anonimamente</button>'
+    +'</div>'
+  }
+}
+
+function renderMoodInline(step){
+  var etapas=[{t:'Minha energia hoje:',opts:['😴 Esgotado','😕 Baixo','😐 Ok','🙂 Bem','😄 Ótimo'],k:'energia'},{t:'Meu humor hoje:',opts:['😞 Muito mal','😕 Mal','😐 Regular','🙂 Bem','😄 Ótimo'],k:'humor'},{t:'Pressão no trabalho:',opts:['😌 Nenhuma','🙂 Leve','😐 Moderada','😟 Alta','😰 Insustentável'],k:'pressao'}];
+  if(step>=etapas.length)return'';
+  var e=etapas[step];
+  var prog='<div style="display:flex;gap:5px;margin-bottom:10px;position:relative;z-index:1">'+[0,1,2].map(function(i){return'<div style="height:3px;flex:1;border-radius:2px;background:'+(i<=step?'var(--a1)':'rgba(255,255,255,.2)')+'"></div>'}).join('')+'</div>';
+  return prog+'<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.8);margin-bottom:8px;position:relative;z-index:1">'+e.t+'</div><div class="mopts" id="mood-opts-'+step+'">'+e.opts.map(function(o,i){return'<div class="mopt" onclick="respMoodInline('+step+',\''+e.k+'\','+i+',this)">'+o+'</div>'}).join('')+'</div>'
+}
+
+function respMoodInline(step,k,v,btn){
+  document.querySelectorAll('#mood-opts-'+step+' .mopt').forEach(function(b){b.classList.remove('sel')});
+  btn.classList.add('sel');moodData[k]=v;
+  setTimeout(function(){
+    var next=step+1;
+    if(next>=3){moodBloqueado=true;document.getElementById('mood-inline').innerHTML='<div style="background:rgba(255,255,255,.15);border-radius:12px;padding:12px;text-align:center;font-size:13px;color:rgba(255,255,255,.9)">✓ Obrigado pelo feedback de hoje! 💚<br><span style="font-size:11px;opacity:.7">Disponível novamente amanhã às 9h</span></div>';document.getElementById('mood-sub').textContent='Respondido hoje';return}
+    document.getElementById('mood-inline').innerHTML=renderMoodInline(next)
+  },350)
+}
+
+function selDen(btn){document.querySelectorAll('.dopt').forEach(function(b){b.classList.remove('sel')});btn.classList.add('sel');denOpt=btn.textContent}
+
+function toggleTermo(){termoAceito=!termoAceito;var cb=document.getElementById('termo-check-box');cb.classList.toggle('checked',termoAceito);cb.textContent=termoAceito?'✓':'';document.getElementById('termo-erro').style.display='none'}
+
+function addProvas(input){
+  if(!input.files)return;
+  var preview=document.getElementById('den-provas-preview');
+  for(var i=0;i<input.files.length;i++){
+    var f=input.files[i];provas.push(f.name);
+    var div=document.createElement('div');div.style.textAlign='center';
+    var ico=f.type.startsWith('image')?'🖼️':f.type.startsWith('video')?'🎥':f.type.startsWith('audio')?'🎵':'📄';
+    div.innerHTML='<div class="upload-thumb">'+ico+'</div><div class="upload-thumb-name">'+f.name.slice(0,8)+'...</div>';
+    preview.appendChild(div)
+  }
+}
+
+function envDen(){
+  var desc=document.getElementById('den-desc').value.trim();var ok=true;
+  if(!desc){document.getElementById('den-desc').classList.add('erro');document.getElementById('den-desc-erro').style.display='block';ok=false}else{document.getElementById('den-desc').classList.remove('erro');document.getElementById('den-desc-erro').style.display='none'}
+  if(!termoAceito){document.getElementById('termo-erro').style.display='block';ok=false}
+  if(!ok)return;
+  toast('Denúncia enviada com segurança ✓');denOpt=null;termoAceito=false;provas=[];
+  setTimeout(function(){renderTab('mais')},1800)
+}
+
+function rhTab(t,b){
+  if(t==='inicio'){
+    b.innerHTML='<div class="card fu"><div class="ctitle">Resumo da empresa</div>'
+    +'<div class="srow" onclick="abreColaboradores()"><div class="sico ib">👥</div><div class="sinfo"><div class="sname">Colaboradores ativos</div><div class="sval">47 cadastrados · 43 ok · 4 pendentes</div></div><div style="color:var(--g400);font-size:18px">›</div></div>'
+    +'<div class="srow" onclick="abrePesquisas()"><div class="sico ig">📊</div><div class="sinfo"><div class="sname">Análises e pesquisas</div><div class="sval">12 realizadas · 2 ativas</div></div><div style="color:var(--g400);font-size:18px">›</div></div>'
+    +'<div class="srow" onclick="abreRiscos()"><div class="sico ir">⚠️</div><div class="sinfo"><div class="sname">Riscos críticos ativos</div><div class="sval">D2 Repetitividade · Burnout · Exigências</div></div><div class="chip cr">3 ›</div></div>'
+    +'<div class="srow" onclick="abreRevisao()"><div class="sico io">📅</div><div class="sinfo"><div class="sname">Próxima revisão bimestral</div><div class="sval">15 de abril de 2026</div></div><div class="chip co">21 dias ›</div></div>'
+    +'<div class="srow" onclick="abreParecer()"><div class="sico ig">📋</div><div class="sinfo"><div class="sname">Parecer semestral</div><div class="sval">Aguarda sua assinatura</div></div><div class="chip cg">Assinar ›</div></div>'
+    +'</div>'
+    +'<div class="slbl fu2">Acessos rápidos</div><div class="agrid fu2">'
+    +'<div class="acard feat2" onclick="abrirSistema()"><div class="aic aiw">📊</div><div><div class="atitle">Sistema Capital Saúde Digital</div><div class="asub">Inventário · Planos · Monitoramento</div></div></div>'
+    +'<div class="acard feat2" onclick="renderTab(\'filmagem\')"><div class="aic aiw">🎥</div><div><div class="atitle">Nova filmagem</div><div class="asub">Gravar vídeo de posto</div></div></div>'
+    +'<div class="acard" onclick="renderTab(\'mood\')"><div class="aic aia">😊</div><div class="atitle">Mood tracking</div><div class="asub">Por setor</div></div>'
+    +'<div class="acard" onclick="abrirSuporteRH()"><div class="aic aiwp">💬</div><div class="atitle">Suporte CSD</div><div class="asub">WhatsApp</div></div>'
+    +'</div>'
+  }
+  else if(t==='filmagem'){
+    b.innerHTML='<div class="slbl fu">Nova filmagem</div>'
+    +'<div class="card fu" id="film-step1"><div class="ctitle">Passo 1 — Selecione o posto de trabalho</div>'
+    +'<div class="info-box">Cada posto representa uma atividade única. Colaboradores da mesma atividade compartilham o vídeo.</div>'
+    +'<div style="display:flex;flex-direction:column;gap:7px;margin-top:10px">'
+    +[{id:'p1',posto:'Montagem de portas',local:'Esteira A — Linha de montagem',n:3},{id:'p2',posto:'Montagem de motor',local:'Esteira B — Linha de montagem',n:2},{id:'p3',posto:'Separação de pedidos',local:'Doca 1 — Logística',n:4},{id:'p4',posto:'Carga e descarga',local:'Doca 2 — Logística',n:3},{id:'p5',posto:'Atendimento ao cliente',local:'Balcão — Administrativo',n:2}].map(function(p){return'<div class="dopt" id="fp-'+p.id+'" onclick="selPosto(\''+p.id+'\',\''+p.posto+'\',\''+p.local+'\','+p.n+')"><span style="font-size:16px">🏭</span><div style="flex:1"><div style="font-size:13px;font-weight:600">'+p.posto+'</div><div style="font-size:11px;color:var(--g400)">'+p.local+' · '+p.n+' colaboradores</div></div></div>'}).join('')
+    +'<div class="dopt" id="fp-outro" onclick="toggleOutro()" style="border:1.5px dashed var(--g200)"><span style="font-size:16px">➕</span><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--p)">Outro posto</div><div style="font-size:11px;color:var(--g400)">Descrever manualmente</div></div></div>'
+    +'</div>'
+    +'<div id="film-outro-box" style="display:none;margin-top:10px"><label class="flbl">Descreva o posto de trabalho</label><textarea class="fta" id="film-outro-desc" placeholder="Ex: Operador de torno mecânico — setor usinagem" rows="2" style="min-height:60px"></textarea><button class="btnp" style="margin-top:8px;padding:10px" onclick="confirmaOutro()">Confirmar posto →</button></div>'
+    +'</div>'
+    +'<div class="card fu2" id="film-step2" style="display:none"><div class="ctitle">Passo 2 — Grave o vídeo</div>'
+    +'<div id="film-sel-info" style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(59,215,126,.08);border-radius:10px;margin-bottom:14px"><span style="font-size:20px">✅</span><div style="flex:1"><div style="font-size:12px;font-weight:600;color:#16a34a" id="film-posto-nome"></div><div style="font-size:11px;color:var(--g400)" id="film-posto-local"></div></div><button onclick="resetFilm()" style="font-size:11px;color:var(--p);background:none;border:none;cursor:pointer;font-weight:600">Trocar</button></div>'
+    +'<div class="film-area" id="film-area"><div id="film-placeholder" style="text-align:center;padding:1.5rem"><div style="font-size:36px;margin-bottom:8px">🎥</div><div style="font-size:13px;font-weight:600;color:var(--g600)">Pronto para gravar</div></div><video id="film-vid-prev" style="display:none;width:100%;max-height:240px;object-fit:cover" controls playsinline></video></div>'
+    +'<div class="card" style="background:rgba(32,73,137,.04);border-color:rgba(32,73,137,.1);padding:12px;margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:var(--p);margin-bottom:8px;letter-spacing:.5px">ORIENTAÇÕES DE FILMAGEM</div>'+['📱 Filme na vertical ou horizontal conforme o posto permitir','👁️ Mantenha o colaborador e seus movimentos visíveis na tela','📏 Distância ideal: 1,5 a 2,5 metros','⏱️ Mínimo de 1 minuto filmando a atividade real','💡 Ambiente bem iluminado — evite contraluz','🔄 Capture o ciclo completo de movimentos'].map(function(o){return'<div style="font-size:11px;color:var(--g600);display:flex;gap:6px;margin-bottom:5px"><span>'+o.split(' ')[0]+'</span><span>'+o.split(' ').slice(1).join(' ')+'</span></div>'}).join('')+'</div>'
+    +'<input type="file" id="film-input" accept="video/*" capture="environment" style="display:none" onchange="prevFilm(this)">'
+    +'<button class="btnp" onclick="document.getElementById(\'film-input\').click()">🎥 Gravar vídeo agora</button>'
+
+    +'</div>'
+    +'<div class="card fu3" id="film-step3" style="display:none"><div class="ctitle">Passo 3 — Revise e envie</div>'
+    +'<div id="film-rev-info" style="padding:10px;background:rgba(59,215,126,.08);border-radius:10px;margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#16a34a" id="film-rev-nome"></div><div style="font-size:11px;color:var(--g400);margin-top:2px" id="film-rev-dur"></div></div>'
+    +'<video id="film-rev-vid" style="width:100%;border-radius:var(--rmd);margin-bottom:12px;max-height:260px;object-fit:cover;background:#000" controls playsinline></video>'
+    +'<div style="padding:10px;background:rgba(245,158,11,.08);border-radius:10px;margin-bottom:14px;font-size:11px;color:#d97706">⚠️ Verifique se o colaborador está visível e realizando a atividade antes de enviar.</div>'
+    +'<button class="btnp" onclick="enviarFilm()">📤 Enviar para análise</button>'
+    +'<button class="btno" onclick="voltarFilm()">← Regravar</button></div>'
+    +'<div class="card" id="film-step4" style="display:none;text-align:center;padding:2rem"><div style="font-size:36px;margin-bottom:10px">📡</div><div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:15px;font-weight:700;color:var(--g800);margin-bottom:6px">Enviando vídeo...</div><div style="font-size:12px;color:var(--g400);margin-bottom:14px" id="film-status">Preparando...</div><div class="prog-bar"><div class="prog-fill" id="film-prog" style="width:0%;background:var(--a1)"></div></div><div style="font-size:11px;color:var(--g400);margin-top:6px" id="film-pct">0%</div></div>'
+  }
+  else if(t==='mood'){
+    b.innerHTML='<div class="slbl fu">Mood tracking — Semana 12</div>'
+    +'<div class="card fu"><div class="ctitle">Resultado por setor</div>'
+    +[{i:'🏭',s:'Produção',e:3.2,h:3.5,p:4.1,n:12,c:'co',l:'Atenção'},{i:'🖥️',s:'Administrativo',e:3.8,h:4.0,p:2.8,n:8,c:'cg',l:'Estável'},{i:'📦',s:'Logística',e:2.9,h:3.1,p:4.4,n:6,c:'cr',l:'Crítico'}].map(function(x){return'<div class="srow" style="cursor:default"><div class="sico ib">'+x.i+'</div><div class="sinfo"><div class="sname">'+x.s+' <span style="font-size:10px;color:var(--g400)">('+x.n+' resp.)</span></div><div class="sval">⚡'+x.e+' 😊'+x.h+' 🔴<span style="'+(x.p>=4?'color:#dc2626;font-weight:700':'')+'">'+ x.p+'</span></div></div><div class="chip '+x.c+'">'+x.l+'</div></div>'}).join('')
+    +'<div class="alerta-box" style="margin-top:10px">⚠ Logística com pressão crítica (4.4/5) e energia baixa (2.9/5)</div></div>'
+    +'<div class="slbl fu2">Histórico — últimas 6 semanas</div>'
+    +'<div class="card fu2"><table style="width:100%;font-size:11px;border-collapse:collapse"><tr style="color:var(--g400)"><td style="padding:5px 6px;font-weight:600">Semana</td><td style="text-align:center;padding:5px 4px">⚡</td><td style="text-align:center;padding:5px 4px">😊</td><td style="text-align:center;padding:5px 4px">🔴</td></tr>'
+    +[['S7','3.9','4.0','3.1'],['S8','3.7','3.9','3.4'],['S9','3.5','3.7','3.7'],['S10','3.3','3.5','4.0'],['S11','3.1','3.4','4.2'],['S12','3.2','3.5','4.1']].map(function(r){return'<tr style="border-top:1px solid var(--g100)"><td style="padding:6px;font-weight:600;color:var(--g600)">'+r[0]+'</td><td style="padding:6px;text-align:center;color:'+(+r[1]<3?'#dc2626':+r[1]<3.5?'#d97706':'#16a34a')+'">'+r[1]+'</td><td style="padding:6px;text-align:center;color:'+(+r[2]<3?'#dc2626':+r[2]<3.5?'#d97706':'#16a34a')+'">'+r[2]+'</td><td style="padding:6px;text-align:center;color:'+(+r[3]>=4?'#dc2626':+r[3]>=3.5?'#d97706':'#16a34a')+';font-weight:'+(+r[3]>=4?'700':'400')+'">'+r[3]+'</td></tr>'}).join('')+'</table></div>'
+  }
+  else if(t==='equipe'){
+    b.innerHTML='<div class="slbl fu">Equipe — 47 colaboradores</div>'
+    +'<div class="card fu"><div class="ctitle">Cadastro completo (43)</div>'
+    +[['João Silva','Produção'],['Maria Santos','Logística'],['Carlos Oliveira','Administrativo'],['Ana Souza','Produção'],['Pedro Lima','Logística'],['Fernanda Costa','Administrativo']].map(function(c){return'<div class="srow" style="cursor:default"><div class="sico ib" style="font-size:12px;font-weight:700;font-family:\'Plus Jakarta Sans\',sans-serif;color:var(--p)">'+c[0].split(' ').slice(0,2).map(function(w){return w[0]}).join('')+'</div><div class="sinfo"><div class="sname">'+c[0]+'</div><div class="sval">'+c[1]+'</div></div><div class="chip cg">✓</div></div>'}).join('')+'</div>'
+    +'<div class="card fu2"><div class="ctitle">Cadastro pendente (4)</div>'
+    +[['Roberto Alves','Produção','Falta WhatsApp'],['Juliana Melo','Logística','Falta atividade'],['Marcos Dias','Produção','Falta email'],['Paula Ramos','Administrativo','Não iniciado']].map(function(c){return'<div class="srow" style="cursor:default"><div class="sico io" style="font-size:12px;font-weight:700;font-family:\'Plus Jakarta Sans\',sans-serif;color:#d97706">'+c[0].split(' ').slice(0,2).map(function(w){return w[0]}).join('')+'</div><div class="sinfo"><div class="sname">'+c[0]+'</div><div class="sval">'+c[1]+' · '+c[2]+'</div></div><div class="chip co">Pendente</div></div>'}).join('')+'</div>'
+    +'<button class="btno fu3" onclick="lnk(\'https://capital-saude.vercel.app\')">Ver todos no sistema →</button>'
+  }
+  else if(t==='graficos'){
+    b.innerHTML='<div class="slbl fu">Visão geral · deslize para ver</div>'
+    +'<div class="carousel" id="chart-carousel" onscroll="updateDots()">'
+    +'<div class="carousel-slide"><div class="ctitle">Evolução dos riscos</div><canvas id="c-evo" height="180"></canvas></div>'
+    +'<div class="carousel-slide"><div class="ctitle">Riscos ergonômicos</div><canvas id="c-erg" height="180"></canvas><div style="font-size:10px;text-align:center;color:var(--g400);margin-top:4px">por nível de risco</div></div>'
+    +'<div class="carousel-slide"><div class="ctitle">Riscos psicossociais</div><canvas id="c-psi" height="180"></canvas><div style="font-size:10px;text-align:center;color:var(--g400);margin-top:4px">por nível de risco</div></div>'
+    +'<div class="carousel-slide"><div class="ctitle">Mood tracking — 6 semanas</div><canvas id="c-mood" height="180"></canvas></div>'
+    +'</div>'
+    +'<div class="carousel-dots" id="cdots"><div class="cdot active" onclick="goSlide(0)"></div><div class="cdot" onclick="goSlide(1)"></div><div class="cdot" onclick="goSlide(2)"></div><div class="cdot" onclick="goSlide(3)"></div></div>'
+    setTimeout(function(){renderGraficosRH()},120)
+  }
+  else if(t==='pareceres'){
+    b.innerHTML='<div class="slbl fu">Pareceres de conformidade</div>'
+    +[{i:'📋',t:'Parecer Semestral — 1º Sem 2026',d:'Empresa Exemplo Ltda',s:'Aguarda sua assinatura',c:'co'},{i:'✅',t:'Parecer Semestral — 2º Sem 2025',d:'Empresa Exemplo Ltda',s:'Assinado por ambas as partes',c:'cg'},{i:'📊',t:'Inventário Inicial — Jan 2026',d:'Empresa Exemplo Ltda',s:'Documento finalizado',c:'cg'}].map(function(p){return'<div class="bitem fu" onclick="abreParecer()"><div class="bico" style="font-size:18px">'+p.i+'</div><div class="binfo"><div class="bnome">'+p.t+'</div><div class="btipo">'+p.d+'</div><div style="margin-top:4px"><span class="chip '+p.c+'">'+p.s+'</span></div></div><div style="color:var(--g400);font-size:16px">›</div></div>'}).join('')
+    +'<button class="btnp fu2" onclick="lnk(\'https://capital-saude.vercel.app\')">Ver todos no sistema →</button>'
+  }
+}
+
+function abreColaboradores(){
+  document.getElementById('sub-colaboradores-body').innerHTML='<div class="slbl">Cadastro completo (43)</div><div class="card">'+[['João Silva','Produção'],['Maria Santos','Logística'],['Carlos Oliveira','Administrativo'],['Ana Souza','Produção'],['Pedro Lima','Logística'],['Fernanda Costa','Administrativo']].map(function(c){return'<div class="srow" style="cursor:default"><div class="sico ig" style="font-size:12px;font-weight:700;color:#16a34a">'+c[0].split(' ').slice(0,2).map(function(w){return w[0]}).join('')+'</div><div class="sinfo"><div class="sname">'+c[0]+'</div><div class="sval">'+c[1]+'</div></div><div class="chip cg">✓</div></div>'}).join('')+'</div>'+'<div class="slbl">Cadastro pendente (4)</div><div class="card">'+[['Roberto Alves','Produção','Falta WhatsApp'],['Juliana Melo','Logística','Falta atividade'],['Marcos Dias','Produção','Falta email'],['Paula Ramos','Administrativo','Não iniciado']].map(function(c){return'<div class="srow" style="cursor:default"><div class="sico io" style="font-size:12px;font-weight:700;color:#d97706">'+c[0].split(' ').slice(0,2).map(function(w){return w[0]}).join('')+'</div><div class="sinfo"><div class="sname">'+c[0]+'</div><div class="sval">'+c[1]+' · '+c[2]+'</div></div><div class="chip co">Pendente</div></div>'}).join('')+'</div>';
+  abreSub('sub-colaboradores')
+}
+
+function abrePesquisas(){
+  document.getElementById('sub-pesquisas-body').innerHTML='<div class="slbl">Psicossocial — COPSOQ II</div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div><div class="sname">Ciclo 2 — Março 2026</div><div class="sval">Data final: 31/03/2026</div></div><div class="chip co">3 dias</div></div><div class="alerta-box">⚠ Faltam apenas 3 dias para encerrar esta pesquisa</div>'+[{s:'Produção',p:85},{s:'Logística',p:100},{s:'Administrativo',p:72}].map(function(x){return'<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div style="font-size:12px;font-weight:500;color:var(--g800)">'+x.s+'</div><div style="font-size:11px;font-weight:700;color:'+(x.p===100?'#16a34a':x.p>=80?'#d97706':'#dc2626')+'">'+x.p+'% '+(x.p===100?'✓':'')+'</div></div><div class="prog-bar"><div class="prog-fill" style="width:'+x.p+'%;background:'+(x.p===100?'#16a34a':x.p>=80?'#d97706':'#dc2626')+'"></div></div></div>'}).join('')+'</div>'
+  +'<div class="slbl">Ergonômico — Formulários</div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div><div class="sname">Ciclo 2 — Março 2026</div><div class="sval">Data final: 15/04/2026</div></div><div class="chip cb">21 dias</div></div>'+[{s:'Produção',p:90},{s:'Logística',p:67},{s:'Administrativo',p:100}].map(function(x){return'<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><div style="font-size:12px;font-weight:500;color:var(--g800)">'+x.s+'</div><div style="font-size:11px;font-weight:700;color:'+(x.p===100?'#16a34a':x.p>=80?'#d97706':'#dc2626')+'">'+x.p+'% '+(x.p===100?'✓':'')+'</div></div><div class="prog-bar"><div class="prog-fill" style="width:'+x.p+'%;background:'+(x.p===100?'#16a34a':x.p>=80?'#d97706':'#dc2626')+'"></div></div></div>'}).join('')+'</div>'
+  +'<div class="slbl">Filmagens por posto</div><div class="card">'+[{posto:'Montagem de portas · Esteira A',ok:true},{posto:'Montagem de motor · Esteira B',ok:false},{posto:'Separação de pedidos · Doca 1',ok:true},{posto:'Carga e descarga · Doca 2',ok:false},{posto:'Atendimento · Balcão',ok:true}].map(function(x,xi){return'<div class="srow" style="cursor:'+(x.ok?'default':'pointer')+'" onclick="'+(x.ok?'':'_filmPesq('+xi+')')+'">'+'<div class="sico '+(x.ok?'ig':'ir')+'">'+(x.ok?'✅':'🎥')+'</div><div class="sinfo"><div class="sname">'+x.posto+'</div><div class="sval">'+(x.ok?'Filmagem concluída':'Filmagem pendente')+'</div></div><div class="chip '+(x.ok?'cg':'cr')+'">'+(x.ok?'Feito':'Pendente')+'</div></div>'}).join('')+'<button class="btnp" style="margin-top:10px" onclick="fechaSub(\'sub-pesquisas\');renderTab(\'filmagem\')">🎥 Ir para filmagem →</button></div>';
+  abreSub('sub-pesquisas')
+}
+
+function abreRiscos(){
+  document.getElementById('sub-riscos-body').innerHTML='<div class="slbl">Riscos críticos ativos</div>'+[{n:'D2 — Repetitividade',s:21,d:'OCRA 7.2 · 85% do tempo em zona crítica · Punho direito',a:'Pausas técnicas — em andamento'},{n:'Burnout (COPSOQ)',s:22,d:'Esgotamento emocional frequente · dificuldade de desligamento',a:'Suporte psicológico — aguardando contratação'},{n:'Exigências Laborais',s:18,d:'Sobrecarga quantitativa · ritmo acelerado',a:'Auditoria de carga — prazo: 45 dias'}].map(function(r){return'<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="font-size:24px;font-weight:700;color:#dc2626;font-family:\'Plus Jakarta Sans\',sans-serif">'+r.s+'<span style="font-size:12px;color:var(--g400)">/25</span></div><div><div style="font-size:13px;font-weight:600;color:var(--g800)">'+r.n+'</div><span class="chip cr">CRÍTICO</span></div></div><div style="font-size:12px;color:var(--g600);margin-bottom:8px">'+r.d+'</div><div style="padding:8px 10px;background:rgba(245,158,11,.08);border-radius:var(--rm);font-size:11px;color:#d97706"><span style="font-weight:600">Ação em andamento:</span> '+r.a+'</div><button class="btno" style="margin-top:10px;font-size:12px;padding:9px" onclick="lnk(\'https://capital-saude.vercel.app\')">Ver plano completo →</button></div>'}).join('');
+  abreSub('sub-riscos')
+}
+
+function abreRevisao(){
+  document.getElementById('sub-revisao-body').innerHTML='<div class="ok-box">📅 Próxima revisão em 21 dias — 15/04/2026</div><div class="card"><div class="ctitle">Riscos que serão revisados</div>'+[{d:'D2 Repetitividade',n:'critico'},{d:'Burnout COPSOQ',n:'critico'},{d:'D1 Postural',n:'alto'},{d:'Exigências Laborais',n:'critico'}].map(function(r){return'<div class="srow" style="cursor:default"><div class="sico '+(r.n==='critico'?'ir':'io')+'">'+(r.n==='critico'?'🔴':'🟡')+'</div><div class="sinfo"><div class="sname">'+r.d+'</div><div class="sval">5 perguntas direcionadas · envio automático</div></div><div class="chip '+(r.n==='critico'?'cr':'co')+'">'+r.n.toUpperCase()+'</div></div>'}).join('')+'</div>'
+  +'<div class="card"><div class="ctitle">Filmagens necessárias</div>'+function(){var postos=[{posto:'Montagem de motor · Esteira B'},{posto:'Carga e descarga · Doca 2'}];return postos.map(function(f,idx){var div=document.createElement('div');div.className='srow';div.style.cursor='pointer';div.innerHTML='<div class="sico ir">🎥</div><div class="sinfo"><div class="sname">'+f.posto+'</div><div class="sval">Filmagem necessária para esta revisão</div></div><div class="chip cr">Pendente</div>';div.onclick=function(){abrirFilmagemPendente(f.posto);};return div.outerHTML;}).join('');}()+'<button class="btnp" style="margin-top:10px" onclick="fechaSub(\'sub-revisao\');renderTab(\'filmagem\')">🎥 Ir para filmagem →</button></div>';
+  abreSub('sub-revisao')
+}
+
+function abreParecer(){
+  document.getElementById('sub-parecer-body').innerHTML='<div class="card"><div class="ctitle">Parecer semestral — 1º Semestre 2026</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--g800)">Empresa Exemplo Ltda</div><div style="font-size:12px;color:var(--g400);margin-top:2px">Jan/2026 — Jun/2026</div></div><div class="chip co">Em progresso</div></div><div style="font-size:12px;color:var(--g600);line-height:1.6;margin-bottom:14px">3 de 7 riscos resolvidos. Repetitividade e Burnout em queda consistente. Exigências Laborais ainda crítico aguardando ação organizacional.</div><div class="ok-box">✓ Assinado pela </div><div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--rm);padding:10px 12px;font-size:11px;color:#d97706;display:flex;align-items:center;gap:6px;margin-bottom:8px">⏳ Aguarda sua assinatura para ser finalizado</div><button class="btnp" onclick="lnk(\'https://capital-saude.vercel.app\')">✍️ Assinar parecer no sistema</button><button class="btno" onclick="baixarPGR()">📄 Baixar PGR em PDF</button><button class="btno" onclick="lnk(\'https://capital-saude.vercel.app\')">Ver histórico completo →</button></div>';
+  abreSub('sub-parecer')
+}
+
+function baixarPGR(){toast('Gerando PDF...');setTimeout(function(){toast('Abrindo no sistema...');setTimeout(function(){lnk('https://capital-saude.vercel.app')},800)},1500)}
+
+function toggleOutro(){
+  document.querySelectorAll('[id^="fp-"]').forEach(function(el){el.classList.remove('sel')});
+  document.getElementById('fp-outro').classList.add('sel');
+  var box=document.getElementById('film-outro-box');
+  box.style.display=box.style.display==='none'?'block':'none';
+}
+function confirmaOutro(){
+  var desc=document.getElementById('film-outro-desc').value.trim();
+  if(!desc){toast('Descreva o posto de trabalho');return}
+  selPosto('outro',desc,'Posto descrito manualmente',0);
+}
+function selPosto(id,posto,local,n){
+  document.querySelectorAll('[id^="fp-"]').forEach(function(el){el.classList.remove('sel')});
+  document.getElementById('fp-'+id).classList.add('sel');filmSel={id:id,posto:posto,local:local,n:n};
+  setTimeout(function(){document.getElementById('film-step1').style.display='none';document.getElementById('film-step2').style.display='block';document.getElementById('film-posto-nome').textContent=posto;document.getElementById('film-posto-local').textContent=local+' · '+n+' colaboradores'},300)
+}
+
+function resetFilm(){filmSel=null;document.getElementById('film-step1').style.display='block';document.getElementById('film-step2').style.display='none';document.getElementById('film-step3').style.display='none';var v=document.getElementById('film-vid-prev');v.style.display='none';document.getElementById('film-placeholder').style.display='block'}
+
+function prevFilm(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];var url=URL.createObjectURL(file);
+  var v=document.getElementById('film-vid-prev');v.src=url;v.style.display='block';document.getElementById('film-placeholder').style.display='none';
+  setTimeout(function(){
+    var rv=document.getElementById('film-rev-vid');rv.src=url;
+    document.getElementById('film-rev-nome').textContent=(filmSel?filmSel.posto+' · '+filmSel.local:'');
+    v.onloadedmetadata=function(){var dur=Math.round(v.duration);document.getElementById('film-rev-dur').textContent='Duração: '+Math.floor(dur/60)+'min '+dur%60+'s · '+(file.size/1024/1024).toFixed(1)+'MB'};
+    document.getElementById('film-step2').style.display='none';document.getElementById('film-step3').style.display='block'
+  },700)
+}
+
+function voltarFilm(){document.getElementById('film-step3').style.display='none';document.getElementById('film-step2').style.display='block'}
+
+function enviarFilm(){
+  document.getElementById('film-step3').style.display='none';document.getElementById('film-step4').style.display='block';
+  var etapas=[[15,'Comprimindo vídeo...'],[35,'Enviando para o servidor...'],[55,'Processando com MediaPipe Pose 3D...'],[72,'Calculando RULA 3D e REBA 3D...'],[87,'Calculando D1-VC e D2-VC...'],[100,'Análise concluída!']];var i=0;
+  var iv=setInterval(function(){if(i>=etapas.length){clearInterval(iv);setTimeout(function(){toast('Análise concluída! Abrindo sistema...');setTimeout(function(){lnk('https://capital-saude.vercel.app')},1200)},500);return}document.getElementById('film-prog').style.width=etapas[i][0]+'%';document.getElementById('film-pct').textContent=etapas[i][0]+'%';document.getElementById('film-status').textContent=etapas[i][1];i++},900)
+}
+
+function goSlide(i){var c=document.getElementById('chart-carousel');if(!c)return;c.scrollTo({left:c.offsetWidth*i,behavior:'smooth'});updateDotsIdx(i)}
+function updateDots(){var c=document.getElementById('chart-carousel');if(!c)return;var i=Math.round(c.scrollLeft/c.offsetWidth);updateDotsIdx(i)}
+function updateDotsIdx(i){var dots=document.querySelectorAll('.cdot');dots.forEach(function(d,idx){d.classList.toggle('active',idx===i)})}
+function renderGraficosRH(){
+  if(typeof Chart==='undefined'){setTimeout(renderGraficosRH,300);return}
+  var c1=document.getElementById('c-evo');
+  if(c1&&!c1._r){c1._r=1;new Chart(c1,{type:'line',data:{labels:['Jan','Mar','Mai','Jul'],datasets:[{label:'D2 Repet.',data:[21,19,17,15],borderColor:'#dc2626',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:4},{label:'Burnout',data:[22,20,18,16],borderColor:'#a855f7',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:4},{label:'D1 Post.',data:[16,15,14,13],borderColor:'#f97316',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:4},{label:'Meta',data:[9,9,9,9],borderColor:'#22c55e',borderDash:[5,4],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}]},options:{responsive:true,plugins:{legend:{labels:{font:{size:10},boxWidth:10}}},scales:{y:{min:0,max:25,ticks:{font:{size:9}}},x:{ticks:{font:{size:9}}}}}})}
+  var c2=document.getElementById('c-erg');
+  if(c2&&!c2._r){c2._r=1;new Chart(c2,{type:'doughnut',data:{labels:['Crítico','Alto','Moderado','Baixo'],datasets:[{data:[2,3,1,0],backgroundColor:['#dc2626','#f97316','#eab308','#22c55e'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}}}})}
+  var c3=document.getElementById('c-psi');
+  if(c3&&!c3._r){c3._r=1;new Chart(c3,{type:'doughnut',data:{labels:['Crítico','Alto','Moderado'],datasets:[{data:[2,1,1],backgroundColor:['#dc2626','#f97316','#eab308'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:8}}}}})}
+  var c4=document.getElementById('c-mood');
+  if(c4&&!c4._r){c4._r=1;new Chart(c4,{type:'line',data:{labels:['S7','S8','S9','S10','S11','S12'],datasets:[{label:'Energia',data:[3.8,3.6,3.4,3.2,3.1,3.2],borderColor:'#3b82f6',backgroundColor:'transparent',borderWidth:2,tension:.4,pointRadius:3},{label:'Humor',data:[4.0,3.8,3.6,3.5,3.4,3.5],borderColor:'#22c55e',backgroundColor:'transparent',borderWidth:2,tension:.4,pointRadius:3},{label:'Pressão',data:[3.2,3.6,3.9,4.1,4.3,4.2],borderColor:'#f97316',backgroundColor:'transparent',borderWidth:2,tension:.4,pointRadius:3}]},options:{responsive:true,plugins:{legend:{labels:{font:{size:10},boxWidth:10}}},scales:{y:{min:1,max:5,ticks:{font:{size:9}}},x:{ticks:{font:{size:9}}}}}})}
+}
+function scrollToMood(){
+  var el=document.getElementById('mood-card');
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function abrirTele(){window.open('https://telemedicina.capitalsaudedigital.com.br/login','_blank')}
+function abrirWppTele(){window.open('https://wa.me/558000008780?text=Ol%C3%A1!%20Quero%20suporte%20da%20telemedicina%20da%20Capital%20Sa%C3%BAde%20Digital','_blank')}
+function lnk(url){if(url==='#'){toast('Em breve disponível');return}toast('Abrindo...')}
+function wpp(){toast('Abrindo WhatsApp...')}
+function trocarPerfil(){toast('Voltando...');setTimeout(function(){document.getElementById('app').classList.remove('active');document.getElementById('splash').classList.add('active');moodStep=0;moodData={};denOpt=null;termoAceito=false;filmSel=null;navHistory=[]},500)}
+function abrirBeneficios(){window.open('https://clube.lifeprix.com.br/auth/signin','_blank')}
+function abrirPlanoFamilia(){window.open('https://wa.me/556140429414?text=Ol%C3%A1!%20Quero%20a%20promo%C3%A7%C3%A3o%20do%20plano%20da%20telemedicina%20familiar%20pagando%20o%20pre%C3%A7o%20do%20individual.%20','_blank')}
+function abrirSuporteColab(){window.open('https://wa.me/556140429414?text=Ol%C3%A1!%20Sou%20colaborador%20e%20preciso%20de%20suporte.%20','_blank')}
+function abrirSistema(){window.open('https://capital-saude.vercel.app','_blank')}
+function abrirOnboarding(){
+  document.getElementById('onboarding').style.display='flex';
+}
+function abrirSuporteRH(){window.open('https://wa.me/556140429414?text=Ol%C3%A1!%20Sou%20empresa-cliente.%20Preciso%20de%20suporte.%20','_blank')}
+function abreMConta(){document.getElementById('mconta').classList.add('open');document.getElementById('mco-overlay').classList.add('open');var d=document.getElementById('mco-denuncia');if(d)d.style.display=perfil==='colaborador'?'flex':'none';}
+function fechaMConta(){document.getElementById('mconta').classList.remove('open');document.getElementById('mco-overlay').classList.remove('open')}
+
+
+var _obData=null;
+function abrirOnboarding(){document.getElementById('onboarding').style.display='flex';}
+function fecharOnboarding(){document.getElementById('onboarding').style.display='none';}
+function obMaskCPF(inp){var v=inp.value.replace(/\D/g,'');if(v.length>3)v=v.slice(0,3)+'.'+v.slice(3);if(v.length>7)v=v.slice(0,7)+'.'+v.slice(7);if(v.length>11)v=v.slice(0,11)+'-'+v.slice(11);inp.value=v.slice(0,14);if(v.replace(/\D/g,'').length===11)obBuscarCPF();else{document.getElementById('ob-nome-box').style.display='none';document.getElementById('ob-btn-cpf').style.display='none';}}
+function obMaskWpp(inp){var v=inp.value.replace(/\D/g,'');if(v.length>2)v='('+v.slice(0,2)+') '+v.slice(2);if(v.length>10)v=v.slice(0,10)+'-'+v.slice(10);inp.value=v.slice(0,15);}
+var _PERFIL_ATIVIDADES = {
+  'Producao': ['Operador de linha de montagem','Soldador','Torneiro mecanico','Operador de maquina CNC','Pintor industrial','Operador de empilhadeira','Auxiliar de producao','Montador de pecas'],
+  'Logistica': ['Auxiliar de deposito','Separador de pedidos','Conferente de mercadorias','Motorista','Operador de carregamento','Auxiliar de logistica'],
+  'Administrativo': ['Assistente administrativo','Analista','Recepcionista','Auxiliar de escritorio','Operador de caixa','Atendente'],
+  'Saude': ['Tecnico de enfermagem','Auxiliar de enfermagem','Agente comunitario de saude','Cuidador'],
+  'Construcao': ['Pedreiro','Eletricista','Encanador','Carpinteiro','Servente de obras'],
+  'Comercio': ['Vendedor','Repositor','Promotor de vendas','Atendente de loja']
+};
+function obPopularAtividades(setor){
+  var sel = document.getElementById('ob-atv');
+  var grp = document.getElementById('ob-atv-group');
+  var ativs = _PERFIL_ATIVIDADES[setor] || _PERFIL_ATIVIDADES['Administrativo'];
+  grp.setAttribute('label', 'Atividades — ' + setor);
+  grp.innerHTML = '';
+  ativs.forEach(function(a){
+    var opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    grp.appendChild(opt);
+  });
+}
+function obBuscarCPF(){
+  document.getElementById('ob-cpf-load').style.display='block';
+  document.getElementById('ob-cpf-erro').style.display='none';
+  setTimeout(function(){
+    document.getElementById('ob-cpf-load').style.display='none';
+    _obData={nome:'Joao Silva',empresa:'Empresa Exemplo Ltda',setor:'Producao',cadastrado:false};
+    document.getElementById('ob-nome-txt').textContent=_obData.nome;
+    document.getElementById('ob-emp-txt').textContent=_obData.empresa+' - '+_obData.setor;
+    obPopularAtividades(_obData.setor);
+    document.getElementById('ob-nome-box').style.display='block';
+    document.getElementById('ob-btn-cpf').style.display='block';
+  },800);
+}
+function obContinuar(){
+  if(!_obData)return;
+  if(_obData.cadastrado){
+    document.getElementById('ob-login-nome').textContent=_obData.nome;
+    document.getElementById('ob-login-emp').textContent=_obData.empresa;
+    document.getElementById('ob-step1').style.display='none';
+    document.getElementById('ob-step3').style.display='block';
+  } else {
+    document.getElementById('ob-cad-nome').textContent=_obData.nome;
+    obPopularAtividades(_obData.setor);
+    document.getElementById('ob-cad-emp').textContent=_obData.empresa;
+    document.getElementById('ob-step1').style.display='none';
+    document.getElementById('ob-step2').style.display='block';
+  }
+}
+function obFinalizar(){
+  var sel=document.getElementById('ob-atv');var atv=sel.value==='Outro — descrever no campo abaixo'?(document.getElementById('ob-atv-txt')||{value:''}).value.trim():sel.value.trim();
+  var email=document.getElementById('ob-email').value.trim();
+  var email2=document.getElementById('ob-email2').value.trim();
+  var wpp=document.getElementById('ob-wpp').value.trim();
+  var wpp2=document.getElementById('ob-wpp2').value.trim();
+  var s=document.getElementById('ob-senha').value;
+  var s2=document.getElementById('ob-senha2').value;
+  var e='';
+  if(!atv)e='Informe sua atividade principal.';
+  else if(!email||!email.includes('@'))e='E-mail invalido.';
+  else if(email!==email2)e='Os e-mails nao conferem.';
+  else if(!wpp||wpp.replace(/\D/g,'').length<10)e='WhatsApp invalido.';
+  else if(wpp!==wpp2)e='Os WhatsApps nao conferem.';
+  else if(!s||s.length<6)e='Senha deve ter no minimo 6 caracteres.';
+  else if(s!==s2)e='As senhas nao conferem.';
+  if(e){var el=document.getElementById('ob-cad-erro');el.textContent=e;el.style.display='block';return;}
+  fecharOnboarding();
+  entrar('colaborador');
+}
+function obLogin(){
+  var s=document.getElementById('ob-login-senha').value;
+  if(!s){document.getElementById('ob-login-erro').textContent='Digite sua senha';document.getElementById('ob-login-erro').style.display='block';return;}
+  fecharOnboarding();
+  entrar('colaborador');
+}
+function obVoltarStep(){
+  document.getElementById('ob-step2').style.display='none';
+  document.getElementById('ob-step3').style.display='none';
+  document.getElementById('ob-step1').style.display='block';
+  _obData=null;
+  document.getElementById('ob-cpf').value='';
+  document.getElementById('ob-nome-box').style.display='none';
+  document.getElementById('ob-btn-cpf').style.display='none';
+}
+
+function _filmPesq(xi){var pp=[{p:'Montagem de portas · Esteira A'},{p:'Montagem de motor · Esteira B'},{p:'Separação de pedidos · Doca 1'},{p:'Carga e descarga · Doca 2'},{p:'Atendimento · Balcão'}];var posto=pp[xi]?pp[xi].p:null;if(!posto)return;fechaSub('sub-pesquisas');renderTab('filmagem');setTimeout(function(){var s1=document.getElementById('film-step1');if(s1)s1.style.display='none';var s2=document.getElementById('film-step2');if(s2)s2.style.display='block';var nm=document.getElementById('film-posto-nome');if(nm)nm.textContent=posto;var lc=document.getElementById('film-posto-local');if(lc)lc.textContent=posto;filmSel={id:'pesq',posto:posto,local:posto,n:0};},500);}
+function abrirFilmagemPendente(posto){fechaSub('sub-revisao');renderTab('filmagem');setTimeout(function(){var s1=document.getElementById('film-step1');if(s1)s1.style.display='none';var s2=document.getElementById('film-step2');if(s2)s2.style.display='block';var nm=document.getElementById('film-posto-nome');if(nm)nm.textContent=posto;var lc=document.getElementById('film-posto-local');if(lc)lc.textContent=posto;filmSel={id:'pendente',posto:posto,local:posto,n:0};},500);}
+var _tt=null;
+function toast(msg){var el=document.getElementById('toast-el');el.textContent=msg;el.classList.add('show');if(_tt)clearTimeout(_tt);_tt=setTimeout(function(){el.classList.remove('show')},2400)}
+</script>
+</body>
+</html>
