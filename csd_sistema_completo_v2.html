@@ -1,0 +1,1355 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary);color:var(--color-text-primary);font-size:13px;line-height:1.5}
+.app{display:flex;min-height:700px}
+.sidebar{width:200px;min-width:200px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{padding:14px 14px 10px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.logo-brand{font-size:13px;font-weight:500}
+.logo-sub{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
+.nsec{padding:10px 14px 3px;font-size:10px;color:var(--color-text-tertiary);font-weight:500;letter-spacing:0.4px;text-transform:uppercase}
+.ni{padding:7px 14px;cursor:pointer;font-size:12px;color:var(--color-text-secondary);display:flex;align-items:center;gap:6px}
+.ni:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.ni.on{background:var(--color-background-info);color:var(--color-text-info);font-weight:500}
+.main{flex:1;padding:20px;overflow-x:hidden}
+.pg{display:none}.pg.on{display:block}
+.ptitle{font-size:17px;font-weight:500;margin-bottom:2px}
+.psub{font-size:12px;color:var(--color-text-secondary);margin-bottom:18px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;margin-bottom:14px}
+.ctitle{font-size:13px;font-weight:500;margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric{background:var(--color-background-secondary);border-radius:8px;padding:12px;text-align:center}
+.mlabel{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px}
+.mval{font-size:20px;font-weight:500}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:500}
+.bc{background:#FCEBEB;color:#A32D2D}.ba{background:#FAEEDA;color:#854F0B}
+.bm{background:#EAF3DE;color:#3B6D11}.bb{background:#F1EFE8;color:#5F5E5A}
+.bi{background:#E6F1FB;color:#185FA5}
+.tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:14px}
+.tab{padding:7px 12px;cursor:pointer;font-size:12px;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab.on{color:var(--color-text-info);border-bottom-color:var(--color-border-info);font-weight:500}
+.tc{display:none}.tc.on{display:block}
+.drow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px}
+.drow:last-child{border-bottom:none}
+.dname{flex:1}.dscore{width:28px;text-align:right;font-weight:500}
+.bw{flex:2;height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.bf{height:100%;border-radius:4px}
+.bfc{background:#E24B4A}.bfa{background:#EF9F27}.bfm{background:#639922}.bfb{background:#B4B2A9}
+label{font-size:11px;color:var(--color-text-secondary);display:block;margin-bottom:3px}
+input[type=range]{width:100%;margin:2px 0}
+select,input[type=text],input[type=number]{width:100%;padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:8px;background:var(--color-background-primary);color:var(--color-text-primary)}
+.fr{margin-bottom:10px}
+.btn{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:8px;background:transparent;color:var(--color-text-primary);font-size:12px;cursor:pointer;font-family:var(--font-sans)}
+.btn:hover{background:var(--color-background-secondary)}
+.btnp{background:var(--color-background-info);color:var(--color-text-info);border-color:transparent}
+.rb{padding:10px 12px;border-radius:8px;margin-top:8px;font-size:12px;line-height:1.6}
+.rbc{background:#FCEBEB;border:1px solid #F7C1C1;color:#501313}
+.rba{background:#FAEEDA;border:1px solid #FAC775;color:#412402}
+.rbm{background:#EAF3DE;border:1px solid #C0DD97;color:#173404}
+.rbb{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary)}
+.alert{padding:9px 11px;border-radius:8px;font-size:12px;margin-bottom:8px;border-left:3px solid}
+.alertc{background:#FCEBEB;border-color:#E24B4A;color:#501313}
+.alerta{background:#FAEEDA;border-color:#EF9F27;color:#412402}
+.alerti{background:#E6F1FB;border-color:#378ADD;color:#042C53}
+.alertg{background:#EAF3DE;border-color:#639922;color:#173404}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;padding:5px 7px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
+td{padding:5px 7px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.qrow{display:flex;align-items:flex-start;gap:7px;padding:6px;border:0.5px solid var(--color-border-tertiary);border-radius:8px;margin-bottom:4px;font-size:12px}
+.qnum{width:22px;height:22px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.qtxt{flex:1}
+.qdim{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+.lks{display:flex;gap:3px;flex-shrink:0}
+.lk{width:26px;height:26px;border-radius:6px;border:0.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;background:var(--color-background-primary)}
+.lk.sel{background:var(--color-background-info);color:var(--color-text-info);border-color:transparent}
+.tl{display:flex;overflow-x:auto;gap:0;padding:8px 0}
+.tli{flex:1;min-width:70px;text-align:center;position:relative}
+.tld{width:30px;height:30px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500}
+.tll{position:absolute;top:15px;left:calc(50% + 15px);right:calc(-50% + 15px);height:1px;background:var(--color-border-tertiary)}
+.tln{font-size:10px;color:var(--color-text-secondary)}
+.tls{font-size:9px;color:var(--color-text-tertiary);margin-top:1px}
+.pn{font-size:10px;font-weight:500}
+.pp{color:#3B6D11}.pn-n{color:#A32D2D}
+.sensor{display:flex;align-items:center;gap:8px;padding:7px;background:var(--color-background-secondary);border-radius:8px;margin-bottom:5px;font-size:12px}
+.sicon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.sval{margin-left:auto;font-weight:500;font-size:14px}
+.plan-item{border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;margin-bottom:8px}
+.w2h{display:grid;grid-template-columns:80px 1fr;gap:4px;margin-top:8px;font-size:11px}
+.w2h-key{color:var(--color-text-secondary);font-weight:500}
+.five-w{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.fw{background:var(--color-background-secondary);border-radius:6px;padding:5px 8px;font-size:11px;flex:1;min-width:100px}
+.fw-k{font-weight:500;color:var(--color-text-secondary);font-size:10px;text-transform:uppercase;margin-bottom:2px}
+</style>
+
+<div class="app">
+<div class="sidebar">
+  <div class="logo"><div class="logo-brand">Capital Saúde Digital</div><div class="logo-sub">Sistema AEPP v2.0</div></div>
+  <div class="nsec">Empresa</div>
+  <div class="ni on" data-pg="dashboard">Dashboard geral</div>
+  <div class="ni" data-pg="empresa">Cadastro</div>
+  <div class="nsec">Avaliação</div>
+  <div class="ni" data-pg="copsoq">COPSOQ II</div>
+  <div class="ni" data-pg="srec">SREC Ergonômico</div>
+  <div class="ni" data-pg="vc">Visão Computacional</div>
+  <div class="nsec">Cálculo</div>
+  <div class="ni" data-pg="calc">Calculadora AIHA</div>
+  <div class="ni" data-pg="polaridade">Polaridades</div>
+  <div class="nsec">Resultados</div>
+  <div class="ni" data-pg="inventario">Inventário de Riscos</div>
+  <div class="ni" data-pg="plano">Plano de Ação 5W2H</div>
+  <div class="nsec">Ciclos</div>
+  <div class="ni" data-pg="ciclos">Monitoramento</div>
+  <div class="ni" data-pg="parecer">Parecer Semestral</div>
+  <div class="nsec">Referência</div>
+  <div class="ni" data-pg="perguntas">Perguntas COPSOQ</div>
+  <div class="ni" data-pg="perfis">23 Perfis Ergonômicos</div>
+  <div class="ni" data-pg="clausulas">Cláusulas de Segurança</div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="pg on" id="pg-dashboard">
+  <div class="ptitle">Dashboard — TechSol Soluções Ltda.</div>
+  <div class="psub">AEPP Abril/2026 · Versão Média · 45 colaboradores · 6 setores</div>
+  <div class="g4" style="margin-bottom:14px">
+    <div class="metric"><div class="mlabel">Setores avaliados</div><div class="mval" style="color:#185FA5">6</div></div>
+    <div class="metric"><div class="mlabel">Dimensões críticas</div><div class="mval" style="color:#A32D2D">8</div></div>
+    <div class="metric"><div class="mlabel">Dimensões altas</div><div class="mval" style="color:#854F0B">14</div></div>
+    <div class="metric"><div class="mlabel">Postos avaliados</div><div class="mval" style="color:#185FA5">7</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">COPSOQ II — Pior score por setor</div>
+      <div style="height:200px;position:relative"><canvas id="ch-psi" role="img" aria-label="Scores psicossociais">Vendas 22 crítico, Suporte 21 crítico, Desenv 13, Fin 14, RH 11, Infra 14</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">SREC — Score máximo por posto</div>
+      <div style="height:200px;position:relative"><canvas id="ch-erg" role="img" aria-label="Scores ergonômicos">Vend-01=19, Vend-02=17, Sup-01=15, Dev-01=14, Dev-02=16, Fin-01=10, Infra-01=16</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Alertas ativos</div>
+    <div class="alertc">CRÍTICO (15 dias — NR-1 item 1.5.7): Burnout/Vendas (22/25) · Exig. Emocionais/Vendas (20/25) · Comp. Ofensivos/Suporte (21/25) · D2 Repetitividade/Vend-01 (19/25) · D5 Organização/Vend-01 (17/25) · D6 Vulnerabilidade/Vend-01 (18/25)</div>
+    <div class="alerta">ALTO (30 dias): Estresse/Vendas (20) · Ritmo/Vendas (17) · Recompensas/Vendas (14) · D2/Vend-02 (17) · D4/Infra-01 (16) · D5/Vend-02 (16) · D6/Vend-02 (15)</div>
+    <div class="alerti">Cláusulas ativas: CS-3 (WAI pobre — Vend-01, encaminhar médico) · CS-4 (formigamento — Vend-01) · CS-5 (VC insuficiente — Sup-01, nova captação agendada M2)</div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Radar de risco — todos os setores</div>
+    <div style="height:200px;position:relative"><canvas id="ch-radar" role="img" aria-label="Radar de risco por setor">Radar comparativo dos 6 setores</canvas></div>
+  </div>
+</div>
+
+<!-- EMPRESA -->
+<div class="pg" id="pg-empresa">
+  <div class="ptitle">Cadastro da empresa</div>
+  <div class="psub">Configuração inicial da AEPP</div>
+  <div class="card">
+    <div class="g2">
+      <div class="fr"><label>Razão social</label><input type="text" value="TechSol Soluções Ltda."></div>
+      <div class="fr"><label>CNPJ</label><input type="text" value="12.345.678/0001-90"></div>
+      <div class="fr"><label>Segmento</label><select><option>Tecnologia da Informação</option><option>Saúde</option><option>Comércio</option><option>Indústria</option></select></div>
+      <div class="fr"><label>Total de colaboradores</label><input type="number" value="45" id="tot-colab" oninput="updVersao()"></div>
+      <div class="fr"><label>Versão COPSOQ selecionada automaticamente</label><div id="versao-badge" style="margin-top:4px"><span class="badge bi">Versão Média (31+ colaboradores)</span></div></div>
+      <div class="fr"><label>Data da AEPP</label><input type="text" value="01/04/2026"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Setores cadastrados</div>
+    <table>
+      <thead><tr><th>Setor</th><th>Colaboradores</th><th>Perfil ergonômico</th><th>VC</th></tr></thead>
+      <tbody>
+        <tr><td>Desenvolvimento de Software</td><td>12</td><td>Perfil 01 — Administrativo/TI</td><td><span class="badge bi">Com vídeo</span></td></tr>
+        <tr><td>Vendas e Pré-Vendas</td><td>10</td><td>Perfil 02 — Telemarketing</td><td><span class="badge bi">Com vídeo</span></td></tr>
+        <tr><td>Suporte ao Cliente</td><td>8</td><td>Perfil 02 — Telemarketing</td><td><span class="badge bi">Com vídeo</span></td></tr>
+        <tr><td>Financeiro e Contabilidade</td><td>7</td><td>Perfil 01 — Administrativo</td><td><span class="badge bb">Sem vídeo</span></td></tr>
+        <tr><td>Recursos Humanos</td><td>5</td><td>Perfil 21 — Saúde Mental</td><td><span class="badge bb">Sem vídeo</span></td></tr>
+        <tr><td>Infraestrutura e TI</td><td>3</td><td>Perfil 10 — Op. Máquinas</td><td><span class="badge bi">Com vídeo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- COPSOQ II -->
+<div class="pg" id="pg-copsoq">
+  <div class="ptitle">COPSOQ II — Avaliação Psicossocial</div>
+  <div class="psub">Simulador de resposta — selecione o setor e responda as perguntas</div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="g2">
+      <div class="fr"><label>Setor</label><select id="cop-setor"><option>Vendas e Pré-Vendas</option><option>Suporte ao Cliente</option><option>Desenvolvimento</option><option>Financeiro</option><option>RH</option></select></div>
+      <div class="fr"><label>Versão aplicada</label><select id="cop-versao"><option>Curta (até 30 colab.)</option><option selected>Média (31+ colab.)</option><option>Longa (investigação)</option></select></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" data-tab="cop" data-tgt="cop-exig">Exigências</div>
+    <div class="tab" data-tab="cop" data-tgt="cop-auto">Autonomia</div>
+    <div class="tab" data-tab="cop" data-tgt="cop-rel">Relações</div>
+    <div class="tab" data-tab="cop" data-tgt="cop-saude">Saúde</div>
+    <div class="tab" data-tab="cop" data-tgt="cop-result">Resultado</div>
+  </div>
+  <div class="tc on" id="cop-exig">
+    <div class="card"><div class="ctitle">Exigências laborais — Polaridade N (resposta alta = risco alto)</div><div id="q-exig"></div></div>
+  </div>
+  <div class="tc" id="cop-auto">
+    <div class="card"><div class="ctitle">Autonomia e desenvolvimento — Polaridade P (resposta alta = proteção → risco = 6−média)</div><div id="q-auto"></div></div>
+  </div>
+  <div class="tc" id="cop-rel">
+    <div class="card"><div class="ctitle">Relações sociais e liderança</div><div id="q-rel"></div></div>
+  </div>
+  <div class="tc" id="cop-saude">
+    <div class="card"><div class="ctitle">Saúde, bem-estar e comportamentos — Polaridade N</div><div id="q-saude"></div></div>
+  </div>
+  <div class="tc" id="cop-result">
+    <div class="card">
+      <div class="ctitle">Scores calculados por dimensão</div>
+      <div class="alerti" style="margin-bottom:10px">Scores calculados com base nas respostas inseridas. Fórmula: Score = Média de Risco × Severidade Ajustada (Matriz AIHA 1–25)</div>
+      <div id="cop-scores"></div>
+      <button class="btn btnp" style="margin-top:10px" onclick="calcCopsoq()">Recalcular scores</button>
+    </div>
+  </div>
+</div>
+
+<!-- SREC -->
+<div class="pg" id="pg-srec">
+  <div class="ptitle">SREC — Motor Ergonômico</div>
+  <div class="psub">Calculadora interativa das 6 dimensões por posto de trabalho</div>
+  <div class="tabs">
+    <div class="tab on" data-tab="srec" data-tgt="srec-d1">D1 Postural</div>
+    <div class="tab" data-tab="srec" data-tgt="srec-d2">D2 Repet.</div>
+    <div class="tab" data-tab="srec" data-tgt="srec-d3">D3 Carga</div>
+    <div class="tab" data-tab="srec" data-tgt="srec-d4">D4 Ambiental</div>
+    <div class="tab" data-tab="srec" data-tgt="srec-d5">D5 Organiz.</div>
+    <div class="tab" data-tab="srec" data-tgt="srec-d6">D6 WAI</div>
+    <div class="tab" data-tab="srec" data-tgt="srec-res">Resultado</div>
+  </div>
+  <div class="tc on" id="srec-d1">
+    <div class="card">
+      <div class="ctitle">D1 — Risco Postural · Sev. Base: 4 · VC: 80% + Formulário: 20%</div>
+      <div class="g2">
+        <div>
+          <div class="fr"><label>RULA — pior frame (1–7)</label><input type="range" id="rula" min="1" max="7" value="5" oninput="updD1()"><span id="rv" style="font-size:11px">5</span></div>
+          <div class="fr"><label>REBA — pior frame (1–15)</label><input type="range" id="reba" min="1" max="15" value="6" oninput="updD1()"><span id="rv2" style="font-size:11px">6</span></div>
+          <div class="fr"><label>OWAS — categoria (1–4)</label><select id="owas" onchange="updD1()"><option value="1">1 — Sem efeito</option><option value="2" selected>2 — Verificar futuro</option><option value="3">3 — Correção breve</option><option value="4">4 — Correção imediata</option></select></div>
+          <div class="fr"><label>NMQ cervical/lombar com restrição? (CS-2)</label><select id="cs2" onchange="updD1()"><option value="0">Não</option><option value="1">Sim → +3 pontos em D1</option></select></div>
+        </div>
+        <div>
+          <div class="fr"><label>Score postural formulário (postura, monitor, headset)</label><input type="range" id="d1form" min="1" max="25" value="9" oninput="updD1()"><span id="d1fv" style="font-size:11px">9</span></div>
+          <div id="d1-res" class="rb rbb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tc" id="srec-d2">
+    <div class="card">
+      <div class="ctitle">D2 — Repetitividade · Sev. Base: 4 · VC: 60% + Formulário: 40%</div>
+      <div class="g2">
+        <div>
+          <div class="fr"><label>OCRA Index da VC (limite: 2.2)</label><input type="range" id="ocra" min="0" max="15" value="5.8" step="0.1" oninput="updD2()"><span id="ocrav" style="font-size:11px">5.8</span></div>
+          <div class="fr"><label>AT/min detectados pela VC (limite: 40)</label><input type="range" id="atmin" min="0" max="80" value="49" oninput="updD2()"><span id="atv" style="font-size:11px">49</span></div>
+          <div class="fr"><label>Fator 1 — Frequência</label><select id="d2f1" onchange="updD2()"><option value="0">&lt;10 AT/min</option><option value="1">10–20</option><option value="2">20–40</option><option value="3" selected>&gt;40</option></select></div>
+          <div class="fr"><label>Fator 2 — Força</label><select id="d2f2" onchange="updD2()"><option value="0">Nenhuma</option><option value="1" selected>Leve</option><option value="2">Moderada</option><option value="4">Intensa (Borg≥5)</option></select></div>
+        </div>
+        <div>
+          <div class="fr"><label>Fator 3 — Variação</label><select id="d2f3" onchange="updD2()"><option value="0">Boa variação</option><option value="1">Alguma</option><option value="2" selected>Raramente</option><option value="3">Rígido</option></select></div>
+          <div class="fr"><label>Fator 4 — Recuperação</label><select id="d2f4" onchange="updD2()"><option value="0">Pausas regulares</option><option value="1" selected>Só no almoço</option><option value="2">Insuficientes</option><option value="3">Nenhuma</option></select></div>
+          <div class="fr"><label>Formigamento constante? (CS-4)</label><select id="cs4" onchange="updD2()"><option value="0">Não</option><option value="1">Sim → D2 mín. ALTO</option></select></div>
+          <div id="d2-res" class="rb rbb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tc" id="srec-d3">
+    <div class="card">
+      <div class="ctitle">D3 — Carga Física · Sev. Base: 5 · 100% Formulário · NIOSH + Snook + Borg</div>
+      <div class="g2">
+        <div>
+          <div class="fr"><label>Peso da carga (kg)</label><select id="d3p" onchange="updD3()"><option value="5">5 kg</option><option value="10">10 kg</option><option value="20" selected>20 kg</option><option value="30">30 kg</option><option value="50">50 kg</option></select></div>
+          <div class="fr"><label>Altura de início do levantamento</label><select id="d3h" onchange="updD3()"><option value="0.93">Acima da cintura</option><option value="0.93" selected>Na cintura</option><option value="0.78">Abaixo da cintura</option><option value="0.51">Do solo</option></select></div>
+          <div class="fr"><label>Frequência de levantamento</label><select id="d3fr" onchange="updD3()"><option value="0.85">Raro</option><option value="0.75" selected>Semanal</option><option value="0.65">Várias por dia</option><option value="0.45">Contínuo</option></select></div>
+          <div class="fr"><label>Assimetria / rotação do tronco</label><select id="d3as" onchange="updD3()"><option value="1.0" selected>Sem rotação</option><option value="0.90">Leve</option><option value="0.81">45–90°</option><option value="0.71">&gt;90°</option></select></div>
+        </div>
+        <div>
+          <div class="fr"><label>Borg CR-10 (esforço percebido)</label><input type="range" id="borg" min="0" max="10" value="4" oninput="updD3()"><span id="borgv" style="font-size:11px">4 — Algo forte</span></div>
+          <div class="fr"><label>Empurrar/puxar cargas?</label><select id="d3pp" onchange="updD3()"><option value="0">Não</option><option value="7">Sim — força moderada</option><option value="13">Sim — força elevada</option><option value="21">Sim — força extrema</option></select></div>
+          <div id="d3-res" class="rb rbb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tc" id="srec-d4">
+    <div class="card">
+      <div class="ctitle">D4 — Risco Ambiental · Sev. Base: 3 · 100% Formulário · D4 = MAX(todos os fatores)</div>
+      <div class="g2">
+        <div>
+          <div class="fr"><label>Ruído</label><select id="d4r" onchange="updD4()"><option value="2">Silencioso</option><option value="7">Moderado</option><option value="13" selected>Alto — interfere na fala</option><option value="21">Extremo (&gt;85 dB estimado)</option></select></div>
+          <div class="fr"><label>Vibração mão-braço</label><select id="d4v" onchange="updD4()"><option value="1" selected>Não</option><option value="7">&lt;2h/dia</option><option value="13">2–4h/dia</option><option value="21">&gt;4h/dia (ISO 5349)</option></select></div>
+          <div class="fr"><label>Vibração corpo inteiro</label><select id="d4vc" onchange="updD4()"><option value="1" selected>Não</option><option value="7">&lt;2h/dia</option><option value="13">2–4h/dia</option><option value="21">&gt;4h/dia (ISO 2631)</option></select></div>
+        </div>
+        <div>
+          <div class="fr"><label>Estresse térmico (calor)</label><select id="d4t" onchange="updD4()"><option value="2" selected>Confortável</option><option value="7">Quente</option><option value="13">Muito quente</option><option value="21">Extremo — forno/fundição</option></select></div>
+          <div class="fr"><label>Qualidade do ar</label><select id="d4a" onchange="updD4()"><option value="2" selected>Boa</option><option value="7">Pó/fumaça eventual</option><option value="13">Exposição frequente</option><option value="21">Sem ventilação — EPI</option></select></div>
+          <div class="fr"><label>Condição do piso</label><select id="d4pi" onchange="updD4()"><option value="1" selected>Regular e seco</option><option value="8">Irregular ou molhado</option><option value="13">Escorregadio frequente</option></select></div>
+          <div id="d4-res" class="rb rbb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tc" id="srec-d5">
+    <div class="card">
+      <div class="ctitle">D5 — Organização do Trabalho · Sev. Base: 3 · 100% Formulário · Soma ponderada de 8 componentes</div>
+      <div class="g2">
+        <div>
+          <div class="fr"><label>Jornada diária</label><select id="d5j" onchange="updD5()"><option value="0">Até 6h</option><option value="4">6–8h</option><option value="8" selected>8–10h</option><option value="12">&gt;10h</option></select></div>
+          <div class="fr"><label>Horas extras</label><select id="d5he" onchange="updD5()"><option value="0">Não</option><option value="2">Eventualmente</option><option value="5" selected>Semanalmente</option><option value="8">Quase diário</option></select></div>
+          <div class="fr"><label>Ritmo de trabalho</label><select id="d5r" onchange="updD5()"><option value="1">Por mim</option><option value="3">Por clientes</option><option value="6" selected>Por metas/sistema</option><option value="9">Por máquina</option></select></div>
+          <div class="fr"><label>Acúmulo de funções</label><select id="d5ac" onchange="updD5()"><option value="0" selected>Não</option><option value="3">Eventualmente</option><option value="5">Regularmente</option></select></div>
+        </div>
+        <div>
+          <div class="fr"><label>Regime de turno</label><select id="d5tu" onchange="updD5()"><option value="0">Diurno fixo</option><option value="5">Noturno fixo</option><option value="9" selected>Rotativo</option><option value="14">Plantão 12x36</option></select></div>
+          <div class="fr"><label>Uso intenso da voz</label><select id="d5vo" onchange="updD5()"><option value="2" selected>&lt;2h/dia</option><option value="5">2–4h/dia</option><option value="8">4–6h/dia</option><option value="10">&gt;6h/dia</option></select></div>
+          <div class="fr"><label>Monitoramento por metas rígidas</label><select id="d5mo" onchange="updD5()"><option value="0">Não</option><option value="3">Metas com autonomia</option><option value="5" selected>Metas rígidas com pressão</option></select></div>
+          <div class="fr"><label>Tempo ao volante sem pausa</label><select id="d5ca" onchange="updD5()"><option value="0" selected>Não dirige</option><option value="2">&lt;1h</option><option value="4">&gt;3h sem pausa</option></select></div>
+          <div id="d5-res" class="rb rbb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tc" id="srec-d6">
+    <div class="card">
+      <div class="ctitle">D6 — Vulnerabilidade Individual · Sev. Base: 4 · Work Ability Index (WAI) — 7 dimensões</div>
+      <div class="g2">
+        <div>
+          <div class="fr"><label>WAI-D1: Capacidade atual (0–10 pontos)</label><input type="range" id="w1" min="0" max="10" value="6" oninput="updD6()"><span id="w1v" style="font-size:11px">6</span></div>
+          <div class="fr"><label>WAI-D2: Exigências físicas suportadas (1–5)</label><input type="range" id="w2f" min="1" max="5" value="3" oninput="updD6()"><span id="w2fv" style="font-size:11px">3</span></div>
+          <div class="fr"><label>WAI-D2: Exigências mentais suportadas (1–5)</label><input type="range" id="w2m" min="1" max="5" value="3" oninput="updD6()"><span id="w2mv" style="font-size:11px">3</span></div>
+          <div class="fr"><label>WAI-D3: Número de grupos de doenças (0–6)</label><input type="range" id="w3" min="0" max="6" value="2" oninput="updD6()"><span id="w3v" style="font-size:11px">2</span></div>
+          <div class="fr"><label>WAI-D4: Limitação no trabalho por doenças (1–6)</label><input type="range" id="w4" min="1" max="6" value="4" oninput="updD6()"><span id="w4v" style="font-size:11px">4</span></div>
+        </div>
+        <div>
+          <div class="fr"><label>WAI-D5: Dias faltados (5=nenhum · 1=100–365 dias)</label><input type="range" id="w5" min="1" max="5" value="3" oninput="updD6()"><span id="w5v" style="font-size:11px">3</span></div>
+          <div class="fr"><label>WAI-D6: Prognóstico próprio em 2 anos</label><select id="w6" onchange="updD6()"><option value="1">Não provavelmente</option><option value="4" selected>Não tenho certeza</option><option value="7">Sim, com certeza</option></select></div>
+          <div class="fr"><label>WAI-D7: Recursos psicológicos (3–12 pontos)</label><input type="range" id="w7" min="3" max="12" value="7" oninput="updD6()"><span id="w7v" style="font-size:11px">7</span></div>
+          <div class="fr"><label>CS-3: Acionar manualmente WAI pobre?</label><select id="cs3" onchange="updD6()"><option value="0">Não (usar cálculo WAI)</option><option value="1">Sim → D6 mín. 20 + encaminhar médico</option></select></div>
+          <div id="d6-res" class="rb rbb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tc" id="srec-res">
+    <div class="card">
+      <div class="ctitle">Resultado SREC — todas as dimensões</div>
+      <div id="srec-final"></div>
+    </div>
+  </div>
+</div>
+
+<!-- VC -->
+<div class="pg" id="pg-vc">
+  <div class="ptitle">Visão Computacional</div>
+  <div class="psub">Obrigatória em toda AEPP — skeleton tracking 3D · RULA · REBA · OCRA</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Posto Vend-01 — Dados processados pelo microserviço Python</div>
+      <div class="sensor"><div class="sicon" style="background:#FCEBEB;color:#A32D2D">R</div><div><div style="font-size:12px;font-weight:500">RULA — pior frame</div><div style="font-size:10px;color:var(--color-text-secondary)">Nível 5–6 = intervenção necessária</div></div><div class="sval" style="color:#A32D2D">5/7</div></div>
+      <div class="sensor"><div class="sicon" style="background:#FAEEDA;color:#854F0B">R</div><div><div style="font-size:12px;font-weight:500">REBA — pior frame</div><div style="font-size:10px;color:var(--color-text-secondary)">Score 4–7 = risco médio</div></div><div class="sval" style="color:#854F0B">6/15</div></div>
+      <div class="sensor"><div class="sicon" style="background:#FCEBEB;color:#A32D2D">O</div><div><div style="font-size:12px;font-weight:500">OCRA Index (limite: 2.2)</div><div style="font-size:10px;color:var(--color-text-secondary)">3.5–9.0 = risco leve–moderado</div></div><div class="sval" style="color:#A32D2D">5.8</div></div>
+      <div class="sensor"><div class="sicon" style="background:#FCEBEB;color:#A32D2D">A</div><div><div style="font-size:12px;font-weight:500">AT/min (limite: ≤40)</div><div style="font-size:10px;color:var(--color-text-secondary)">ISO 11228-3</div></div><div class="sval" style="color:#A32D2D">49</div></div>
+      <div class="sensor"><div class="sicon" style="background:#EAF3DE;color:#3B6D11">C</div><div><div style="font-size:12px;font-weight:500">Confiança skeleton</div><div style="font-size:10px;color:var(--color-text-secondary)">≥0.70 = válido (CS-5 se menor)</div></div><div class="sval" style="color:#3B6D11">0.87</div></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Conversão para escala AIHA e composição dos scores</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">Tabela de conversão RULA → AIHA</div>
+      <table style="margin-bottom:10px">
+        <thead><tr><th>RULA</th><th>Classificação</th><th>Score AIHA</th></tr></thead>
+        <tbody>
+          <tr><td>1–2</td><td>Aceitável</td><td><span class="badge bb">3</span></td></tr>
+          <tr><td>3–4</td><td>Investigar</td><td><span class="badge bm">7</span></td></tr>
+          <tr><td>5–6</td><td>Intervenção necessária</td><td><span class="badge ba">13</span></td></tr>
+          <tr><td>7</td><td>Intervenção imediata</td><td><span class="badge bc">21</span></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;background:var(--color-background-secondary);padding:10px;border-radius:8px;line-height:1.8">
+        <strong>D1 via VC:</strong> MAX(RULA→13, REBA→7, OWAS→7) = 13<br>
+        <strong>D1 via Form.:</strong> score postural = 9<br>
+        <strong>D1 FINAL:</strong> 13×0.80 + 9×0.20 = 10.4+1.8 = <strong>12 — Alto</strong><br><br>
+        <strong>D2 via VC:</strong> OCRA 5.8 → score AIHA = 13<br>
+        <strong>D2 via Form.:</strong> 4 fatores OCRA = 11<br>
+        <strong>D2 FINAL:</strong> 13×0.60 + 11×0.40 = 7.8+4.4 = 12<br>
+        <strong>CS-4 ativa:</strong> formigamento → mín. 10 → D2 = MAX(12,10) = <strong>12 — Alto</strong>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Status da VC por posto — AEPP Abril/2026</div>
+    <table>
+      <thead><tr><th>Posto</th><th>Setor</th><th>RULA</th><th>REBA</th><th>OCRA</th><th>AT/min</th><th>Confiança</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Vend-01</td><td>Vendas</td><td>5</td><td>6</td><td>5.8</td><td>49</td><td>0.87</td><td><span class="badge bm">Válida</span></td></tr>
+        <tr><td>Vend-02</td><td>Vendas</td><td>4</td><td>5</td><td>5.2</td><td>44</td><td>0.79</td><td><span class="badge bm">Válida</span></td></tr>
+        <tr><td>Sup-01</td><td>Suporte</td><td>5</td><td>5</td><td>—</td><td>—</td><td>0.65</td><td><span class="badge bc">CS-5 — Nova captação M2</span></td></tr>
+        <tr><td>Dev-01</td><td>Desenv.</td><td>4</td><td>4</td><td>3.8</td><td>32</td><td>0.91</td><td><span class="badge bm">Válida</span></td></tr>
+        <tr><td>Dev-02</td><td>Desenv.</td><td>3</td><td>4</td><td>4.1</td><td>35</td><td>0.83</td><td><span class="badge bm">Válida</span></td></tr>
+        <tr><td>Infra-01</td><td>Infra</td><td>3</td><td>3</td><td>2.1</td><td>18</td><td>0.94</td><td><span class="badge bm">Válida</span></td></tr>
+        <tr><td>Fin-01</td><td>Financeiro</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="badge bb">Sem vídeo — 100% Form.</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CALCULADORA -->
+<div class="pg" id="pg-calc">
+  <div class="ptitle">Calculadora AIHA — Matriz de Risco</div>
+  <div class="psub">Simule qualquer dimensão psicossocial ou ergonômica · Score = Prob. × Sev. Ajustada</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Parâmetros de entrada</div>
+      <div class="fr"><label>Média das respostas (1.0–5.0)</label><input type="range" id="cm" min="1" max="5" step="0.05" value="4.1" oninput="calcAIHA()"><span id="cmv" style="font-size:12px;font-weight:500">4.10</span></div>
+      <div class="fr"><label>Polaridade</label><select id="cpol" onchange="calcAIHA()"><option value="N">N — Negativa (Média de Risco = média direta)</option><option value="P">P — Positiva (Média de Risco = 6 − média)</option></select></div>
+      <div class="fr"><label>Severidade Base (1–5)</label><select id="csev" onchange="calcAIHA()">
+        <option value="5">5 — Crítico (Burnout, Estresse, Sono, Comp. Ofensivos, Esconder Emoções, Conflito Papéis, Sint. Depressivos, Est. Somático, Est. Cognitivo)</option>
+        <option value="4" selected>4 — Alto (Exig. Quant., Ritmo, Cognitivas, Liderança, Sup. Superiores, Transp. Papel, Recompensas, Saúde Geral, CTF, CFT)</option>
+        <option value="3">3 — Moderado (Influência, Poss. Desenvolvimento, Variação, Previsibilidade, Colegas, Comunidade, H/V Conf., Resp. Social, Significado, Compromisso, Insegurança, Autoeficácia)</option>
+        <option value="2">2 — Baixo (Satisfação Laboral)</option>
+      </select></div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;line-height:1.7">
+        <strong>Ajuste dinâmico de severidade:</strong><br>
+        Sev.5 + MR≥4 → 5 · Sev.5 + MR&lt;4 → 4<br>
+        Sev.4 + MR≥4.5 → 5 · Sev.4 + MR2–4 → 4 · Sev.4 + MR&lt;2 → 3<br>
+        Sev.3 + MR≥4 → 4 · Sev.3 + MR&lt;2 → 2 · demais → 3<br>
+        Sev.2 + MR≥4.5 → 4 · Sev.2 + MR≥3.5 → 3 · demais → 2
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Resultado</div>
+      <div id="calc-res"></div>
+    </div>
+  </div>
+</div>
+
+<!-- POLARIDADES -->
+<div class="pg" id="pg-polaridade">
+  <div class="ptitle">Polaridades das perguntas COPSOQ II</div>
+  <div class="psub">N = resposta alta → risco alto · P = resposta alta → proteção (risco = 6 − média)</div>
+  <div class="card">
+    <div class="alerti" style="margin-bottom:10px">Q29 da Curta / Q61 da Média / Q77 da Longa (Saúde Geral): escala invertida Excelente→Deficitária — polaridade N direta pois resposta alta = saúde pior.</div>
+    <div class="tabs">
+      <div class="tab on" data-tab="pol" data-tgt="pol-c">Curta (41)</div>
+      <div class="tab" data-tab="pol" data-tgt="pol-m">Média (76)</div>
+      <div class="tab" data-tab="pol" data-tgt="pol-l">Longa (119)</div>
+    </div>
+    <div class="tc on" id="pol-pol-c">
+      <div style="font-size:12px;line-height:1.8;font-family:var(--font-mono)">
+        1n 2n 3n 4n 5n 6n · 7p 8p 9p 10p 11p 12p 13p 14p 15p 16p 17p 18p 19p 20p 21p 22p 23p 24p 25p 26p 27p · 28n 29n(especial) 30n 31n 32n 33n 34n 35n 36n 37n 38n 39n 40n 41n
+      </div>
+    </div>
+    <div class="tc" id="pol-pol-m">
+      <div style="font-size:12px;line-height:1.8;font-family:var(--font-mono)">
+        1n 2n 3n 4n 5n · 6p(adj) 7n 8n · 9p 10p 11p 12p · 13p(adj) 14p 15p · 16p 17p · 18p 19p 20p · 21p 22p 23p · 24n(adj) 25n 26n · 27p 28p 29p · 30p 31p 32p · 33p 34p 35p · 36p 37p 38p 39p · 40n 41n · 42p 43p 44p · 45n · 46p 47p 48p · 49p 50p · 51p 52p · 53p 54p 55p · 56p 57p 58p 59p · 60n · 61n(especial) · 62n 63n 64n · 65n 66n · 67n 68n · 69n 70n 71n 72n · 73n 74n 75n 76n
+      </div>
+    </div>
+    <div class="tc" id="pol-pol-l">
+      <div style="font-size:12px;line-height:1.8;font-family:var(--font-mono)">
+        1n–14n (Exig. Quant., Ritmo, Cognitivas, Emocionais, Esconder Emoções — todas N)<br>
+        15p 16p 17p 18p (Influência) · 19p 20p 21p (Poss. Desenv.) · 22p (Variação) · 23p 24p (Previsibilidade) · 25p 26p 27p (Transp. Papel) · 28p 29p 30p 31p (Recompensas) · 32p 33p 34p 35p (Conflito Papéis — longa inverte!) · 36p 37n 38n (Colegas) · 39n 40n 41p (Superiores) · 42p 43p 44p (Comunidade) · 45p 46p 47p 48p (Liderança) · 49p 50p 51n (Conf. Horiz.) · 52n 53n 54n (Conf. Vert.) · 55p 56p 57p 58p (Justiça) · 59n 60n 61n 62n (Resp. Social) · 63n 64p (Significado) · 65p 66p 67p 68p (Compromisso) · 69p–76p (Satisfação + Insegurança) · 77n(especial) · 78p–82p (CTF + CFT) · 83p–86p (Sono) · 87n–119n (Burnout, Estresse, Sint. Dep., Est. Somático, Est. Cognitivo, Autoeficácia, Comp. Ofensivos)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INVENTÁRIO -->
+<div class="pg" id="pg-inventario">
+  <div class="ptitle">Inventário de Riscos</div>
+  <div class="psub">Todos os riscos Alto e Crítico — por setor (psicossocial) e por posto (ergonômico)</div>
+  <div class="alertc">Ergonômico e psicossocial são inventários INDEPENDENTES — cada um com seu próprio plano de ação.</div>
+  <div style="margin-top:10px">
+  <div class="tabs">
+    <div class="tab on" data-tab="inv" data-tgt="inv-psi">Psicossocial por setor</div>
+    <div class="tab" data-tab="inv" data-tgt="inv-erg">Ergonômico por posto</div>
+  </div>
+  <div class="tc on" id="inv-inv-psi">
+    <div class="card"><div id="inv-psi-tbl"></div></div>
+  </div>
+  <div class="tc" id="inv-inv-erg">
+    <div class="card">
+      <table>
+        <thead><tr><th>Posto</th><th>Setor</th><th>D1</th><th>D2</th><th>D3</th><th>D4</th><th>D5</th><th>D6</th><th>Cláusulas</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Vend-01</strong></td><td>Vendas</td><td><span class="badge ba">11</span></td><td><span class="badge bc">12</span></td><td><span class="badge bb">2</span></td><td><span class="badge ba">13</span></td><td><span class="badge bc">17</span></td><td><span class="badge bc">18</span></td><td><span class="badge bc">CS-3,CS-4</span></td></tr>
+          <tr><td><strong>Vend-02</strong></td><td>Vendas</td><td><span class="badge bm">9</span></td><td><span class="badge bc">17</span></td><td><span class="badge bb">2</span></td><td><span class="badge ba">13</span></td><td><span class="badge ba">16</span></td><td><span class="badge ba">15</span></td><td>—</td></tr>
+          <tr><td><strong>Sup-01</strong></td><td>Suporte</td><td><span class="badge bm">8</span></td><td><span class="badge ba">15</span></td><td><span class="badge bb">2</span></td><td><span class="badge ba">13</span></td><td><span class="badge ba">14</span></td><td><span class="badge ba">12</span></td><td><span class="badge bi">CS-5</span></td></tr>
+          <tr><td>Dev-01</td><td>Desenv.</td><td><span class="badge bm">7</span></td><td><span class="badge ba">14</span></td><td><span class="badge bb">2</span></td><td><span class="badge bm">8</span></td><td><span class="badge ba">10</span></td><td><span class="badge bm">9</span></td><td>—</td></tr>
+          <tr><td>Dev-02</td><td>Desenv.</td><td><span class="badge bm">9</span></td><td><span class="badge ba">16</span></td><td><span class="badge bb">2</span></td><td><span class="badge bm">8</span></td><td><span class="badge ba">10</span></td><td><span class="badge bm">7</span></td><td>—</td></tr>
+          <tr><td>Fin-01</td><td>Financeiro</td><td><span class="badge bm">6</span></td><td><span class="badge bm">8</span></td><td><span class="badge bb">2</span></td><td><span class="badge bm">5</span></td><td><span class="badge ba">10</span></td><td><span class="badge bm">8</span></td><td>—</td></tr>
+          <tr><td>Infra-01</td><td>Infra</td><td><span class="badge bm">8</span></td><td><span class="badge bm">7</span></td><td><span class="badge bm">5</span></td><td><span class="badge ba">16</span></td><td><span class="badge bm">9</span></td><td><span class="badge bm">7</span></td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- PLANO -->
+<div class="pg" id="pg-plano">
+  <div class="ptitle">Plano de Ação 5W2H</div>
+  <div class="psub">Gerado pela Claude API (claude-sonnet-4-6) — dois documentos independentes</div>
+  <div class="tabs">
+    <div class="tab on" data-tab="pl" data-tgt="pl-psi">Psicossocial — Vendas</div>
+    <div class="tab" data-tab="pl" data-tgt="pl-erg">Ergonômico — Vend-01</div>
+  </div>
+  <div class="tc on" id="pl-pl-psi"><div id="plano-psi-content"></div></div>
+  <div class="tc" id="pl-pl-erg"><div id="plano-erg-content"></div></div>
+</div>
+
+<!-- CICLOS -->
+<div class="pg" id="pg-ciclos">
+  <div class="ptitle">Ciclos Bimestrais de Monitoramento</div>
+  <div class="psub">Semestre completo — Abril/2026 a Outubro/2026 · Parecer 15 dias úteis após M6</div>
+  <div class="card">
+    <div class="ctitle">Linha do tempo</div>
+    <div class="tl">
+      <div class="tli"><div class="tld" style="background:#E6F1FB;color:#185FA5">AEPP</div><div class="tll"></div><div class="tln">Abr/26</div><div class="tls">PSI+ERG+VC</div></div>
+      <div class="tli"><div class="tld" style="background:#FAEEDA;color:#854F0B">M1</div><div class="tll"></div><div class="tln">Mai/26</div><div class="tls">Rev. PSI</div></div>
+      <div class="tli"><div class="tld" style="background:#F1EFE8;color:#5F5E5A">M2</div><div class="tll"></div><div class="tln">Jun/26</div><div class="tls">Rev. ERG+VC</div></div>
+      <div class="tli"><div class="tld" style="background:#FAEEDA;color:#854F0B">M3</div><div class="tll"></div><div class="tln">Jul/26</div><div class="tls">Rev. PSI</div></div>
+      <div class="tli"><div class="tld" style="background:#F1EFE8;color:#5F5E5A">M4</div><div class="tll"></div><div class="tln">Ago/26</div><div class="tls">Rev. ERG+VC</div></div>
+      <div class="tli"><div class="tld" style="background:#FAEEDA;color:#854F0B">M5</div><div class="tll"></div><div class="tln">Set/26</div><div class="tls">Rev. PSI</div></div>
+      <div class="tli"><div class="tld" style="background:#F1EFE8;color:#5F5E5A">M6</div><div class="tll"></div><div class="tln">Out/26</div><div class="tls">Rev. ERG+VC</div></div>
+      <div class="tli"><div class="tld" style="background:#FCEBEB;color:#A32D2D">PAR</div><div class="tln">Nov/26</div><div class="tls">+15 DU M6</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">M1 — Revisão Psicossocial (Mai/26) · Perguntas da Versão Longa enviadas aos setores</div>
+    <div class="alerti" style="margin-bottom:8px">Empresa avaliada com Versão Média. Os ciclos M1/M3/M5 usam SEMPRE a Versão Longa para maior granularidade nas dimensões de maior risco.</div>
+    <table>
+      <thead><tr><th>Setor</th><th>Dimensão</th><th>Nível</th><th>Perguntas Versão Longa enviadas</th><th>Qtd.</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="4">Vendas</td><td>Burnout</td><td><span class="badge bc">Crítico</span></td><td>Q87 Cansado · Q88 Esgotado · Q89 Fis. exausto · Q90 Emoc. exausto</td><td>4</td></tr>
+        <tr><td>Exig. Emocionais</td><td><span class="badge bc">Crítico</span></td><td>Q8 Situações perturbadoras · Q9 Exige emocionalmente · Q10 Envolvimento emocional</td><td>3</td></tr>
+        <tr><td>Estresse</td><td><span class="badge bc">Crítico</span></td><td>Q91 Dif. relaxar · Q92 Irritado · Q93 Tenso · Q94 Ansioso</td><td>4</td></tr>
+        <tr><td>Recompensas</td><td><span class="badge ba">Alto</span></td><td>Q28 Reconhecido · Q29 Perspectivas · Q30 Respeitado · Q31 Tratado justamente · Q56 Aprecia trabalho</td><td>5</td></tr>
+        <tr><td rowspan="2">Suporte</td><td>Comp. Ofensivos</td><td><span class="badge bc">Crítico</span></td><td>Q114 Conflitos · Q115 Rumores · Q116 Insultos · Q117 Assédio sexual · Q118 Ameaças · Q119 Violência física</td><td>6</td></tr>
+        <tr><td>Burnout</td><td><span class="badge bc">Crítico</span></td><td>Q87 Cansado · Q88 Esgotado · Q89 Fis. exausto · Q90 Emoc. exausto</td><td>4</td></tr>
+        <tr><td>Financeiro</td><td>Insegurança Laboral</td><td><span class="badge ba">Alto</span></td><td>Q73 Desemprego · Q74 Nova tecnologia · Q75 Outro emprego · Q76 Transferência · Q51 Significado</td><td>5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="ctitle">Evolução semestral dos scores — dimensões críticas selecionadas</div>
+    <div style="height:200px;position:relative"><canvas id="ch-evol" role="img" aria-label="Evolução dos scores ao longo do semestre">Burnout Vendas: 22→19→16→12. Comp.Ofensivos Suporte: 21→18→15→12.</canvas></div>
+  </div>
+</div>
+
+<!-- PARECER -->
+<div class="pg" id="pg-parecer">
+  <div class="ptitle">Parecer Técnico Semestral</div>
+  <div class="psub">Gerado pela Claude API (claude-sonnet-4-6) · Emitido 15 dias úteis após M6 · Valor jurídico</div>
+  <div class="g2">
+    <div class="card">
+      <div class="ctitle">Classificação de conformidade por setor</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:#EAF3DE"><span style="font-size:12px;font-weight:500;color:#173404;flex:1">Financeiro · RH</span><span class="badge bm">CONFORME</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:#FAEEDA"><span style="font-size:12px;font-weight:500;color:#412402;flex:1">Desenvolvimento · Infraestrutura</span><span class="badge ba">EM PROGRESSO</span></div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:#FCEBEB"><span style="font-size:12px;font-weight:500;color:#501313;flex:1">Vendas · Suporte</span><span class="badge bc">ATENÇÃO</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Escala de conformidade NR-1</div>
+      <div style="font-size:11px;line-height:2">
+        <div style="display:flex;gap:6px;align-items:center"><span class="badge bm">CONFORME</span> Todos os riscos ≤ Moderado ao final do semestre</div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="badge ba">EM PROGRESSO</span> Alto/Crítico em queda ≥2 pontos por ciclo</div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="badge" style="background:#FAEEDA;color:#854F0B">ATENÇÃO</span> Risco estagnado por 2+ ciclos consecutivos</div>
+        <div style="display:flex;gap:6px;align-items:center"><span class="badge bc">NÃO CONFORME</span> Risco em regressão ou Crítico sem ação</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Evolução geral do semestre — score máximo por setor</div>
+    <div style="height:220px;position:relative"><canvas id="ch-par" role="img" aria-label="Evolução semestral por setor">Vendas caiu de 22 para 18, Suporte de 21 para 15</canvas></div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Resumo executivo (exemplo de output da Claude API)</div>
+    <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.8">Ao término do semestre avaliado (Abril–Outubro/2026), os setores de Vendas e Suporte apresentam riscos psicossociais ainda classificados em nível Crítico nas dimensões Burnout e Comportamentos Ofensivos, respectivamente, indicando que as ações implementadas, embora com progressos documentados, foram insuficientes para atingir conformidade plena no prazo de um semestre. Os setores Financeiro e RH atingiram conformidade plena, com todos os riscos reduzidos ao nível Moderado ou inferior. Recomenda-se, para o próximo semestre, a intensificação das ações nos setores de Vendas e Suporte e a realização de investigação aprofundada com Versão Longa do COPSOQ II nestes setores. O presente parecer não substitui o PGR, o PCMSO nem o LTCAT, sendo complementar a esses documentos.</div>
+  </div>
+</div>
+
+<!-- PERGUNTAS COPSOQ -->
+<div class="pg" id="pg-perguntas">
+  <div class="ptitle">Perguntas COPSOQ II — texto completo</div>
+  <div class="psub">Todas as versões com dimensão e polaridade</div>
+  <div class="tabs">
+    <div class="tab on" data-tab="pq" data-tgt="pq-c">Curta (41)</div>
+    <div class="tab" data-tab="pq" data-tgt="pq-m">Média (76)</div>
+    <div class="tab" data-tab="pq" data-tgt="pq-l">Longa (119)</div>
+  </div>
+  <div class="tc on" id="pq-pq-c"><div class="card" id="pq-curta-content"></div></div>
+  <div class="tc" id="pq-pq-m"><div class="card" id="pq-media-content"></div></div>
+  <div class="tc" id="pq-pq-l"><div class="card" id="pq-longa-content"></div></div>
+</div>
+
+<!-- PERFIS -->
+<div class="pg" id="pg-perfis">
+  <div class="ptitle">23 Perfis Ergonômicos</div>
+  <div class="psub">A triagem inicial (4 perguntas) identifica o perfil e ativa os módulos temáticos correspondentes</div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Nº</th><th>Perfil</th><th>Atividade principal</th><th>Módulos ativos</th><th>Dim. foco</th></tr></thead>
+      <tbody id="perfis-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CLÁUSULAS -->
+<div class="pg" id="pg-clausulas">
+  <div class="ptitle">Cláusulas de Segurança — CS-1 a CS-5</div>
+  <div class="psub">Mecanismos automáticos que impedem subestimação de riscos específicos no SREC</div>
+  <div class="alertc" style="margin-bottom:10px">As cláusulas adicionam pontos ou estabelecem mínimos nas dimensões. Todas as dimensões continuam sendo calculadas normalmente — a cláusula age SOBRE o resultado calculado.</div>
+  <div class="card">
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge bc">CS-1</span><strong style="font-size:13px">Dimensão crítica — flag obrigatória</strong></div>
+      <div class="w2h">
+        <span class="w2h-key">Gatilho:</span><span>Qualquer dimensão D1–D6 com score ≥ 17 (nível Crítico)</span>
+        <span class="w2h-key">Ação:</span><span>Flag de intervenção obrigatória no inventário — prazo 15 dias (NR-1 item 1.5.7). Alerta enviado ao responsável.</span>
+        <span class="w2h-key">Dimensão:</span><span>Todas</span>
+        <span class="w2h-key">Norma:</span><span>NR-1 item 1.5.7 — Portaria MTE nº 1.419/2024</span>
+      </div>
+    </div>
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge bc">CS-2</span><strong style="font-size:13px">NMQ cervical ou lombar com restrição funcional</strong></div>
+      <div class="w2h">
+        <span class="w2h-key">Gatilho:</span><span>NMQ reporta sintoma na região cervical OU lombar com restrição de atividade (campo "restrição = sim")</span>
+        <span class="w2h-key">Ação:</span><span>D1 recebe +3 pontos adicionais ao score calculado pelo motor (VC + formulário). Máximo 25.</span>
+        <span class="w2h-key">Dimensão:</span><span>D1 — Risco Postural</span>
+        <span class="w2h-key">Norma:</span><span>ISO 11226:2000; NMQ Kuorinka et al. (1987)</span>
+      </div>
+    </div>
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge bc">CS-3</span><strong style="font-size:13px">WAI pobre — capacidade funcional comprometida</strong></div>
+      <div class="w2h">
+        <span class="w2h-key">Gatilho:</span><span>Score total do WAI (Work Ability Index) inferior a 28 pontos (classificação "Pobre")</span>
+        <span class="w2h-key">Ação:</span><span>D6 recebe score mínimo ALTO (20/25), independentemente do cálculo normal. Flag de encaminhamento ao Médico do Trabalho (NR-07).</span>
+        <span class="w2h-key">Dimensão:</span><span>D6 — Vulnerabilidade Individual</span>
+        <span class="w2h-key">Norma:</span><span>Finnish Institute of Occupational Health (1998); NR-07</span>
+      </div>
+    </div>
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge bc">CS-3-EMO</span><strong style="font-size:13px">Embotamento emocional — fadiga por compaixão</strong></div>
+      <div class="w2h">
+        <span class="w2h-key">Gatilho:</span><span>Módulo M-EMO pergunta Q61: colaborador reporta embotamento emocional frequente ou constante</span>
+        <span class="w2h-key">Ação:</span><span>D6 amplificado + flag de burnout moral / fadiga por compaixão. Score D6 multiplicado por 1.2 (máximo 25).</span>
+        <span class="w2h-key">Dimensão:</span><span>D6 — Vulnerabilidade Individual</span>
+        <span class="w2h-key">Norma:</span><span>CID-11 QD85 (OMS 2022); Maslach (1981)</span>
+      </div>
+    </div>
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge bc">CS-4</span><strong style="font-size:13px">Borg ≥ 7 ou formigamento constante</strong></div>
+      <div class="w2h">
+        <span class="w2h-key">Gatilho:</span><span>Borg CR-10 ≥ 7 (esforço "muito forte") reportado para D3 OU formigamento constante nas mãos reportado para D2</span>
+        <span class="w2h-key">Ação:</span><span>Dimensão afetada recebe score mínimo ALTO (10/25). Se já estava acima de 10, mantém o valor calculado.</span>
+        <span class="w2h-key">Dimensão:</span><span>D2 (formigamento) ou D3 (Borg)</span>
+        <span class="w2h-key">Norma:</span><span>Borg CR-10 (1982); OCRA Occhipinti (1998)</span>
+      </div>
+    </div>
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="badge bi">CS-5</span><strong style="font-size:13px">Confiança do skeleton insuficiente — VC descartada</strong></div>
+      <div class="w2h">
+        <span class="w2h-key">Gatilho:</span><span>Confiança do skeleton tracking retornada pelo microserviço Python inferior a 0.70 para o posto</span>
+        <span class="w2h-key">Ação:</span><span>Sistema opera 100% em modo formulário para D1 e D2 neste posto. VC descartada. Nova captação de vídeo agendada para o próximo ciclo (M2).</span>
+        <span class="w2h-key">Dimensão:</span><span>D1 e D2 deste posto</span>
+        <span class="w2h-key">Norma:</span><span>Critério técnico CSD — garantia de qualidade da avaliação</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DIMS=[
+  {d:"Exigências Quantitativas",s:4,vend:22,sup:16,dev:8,fin:7,rh:5,inf:6},
+  {d:"Ritmo de Trabalho",s:4,vend:17,sup:13,dev:10,fin:8,rh:5,inf:7},
+  {d:"Exigências Cognitivas",s:4,vend:8,sup:9,dev:13,fin:7,rh:6,inf:14},
+  {d:"Exigências Emocionais",s:5,vend:20,sup:16,dev:7,fin:5,rh:9,inf:5},
+  {d:"Conflito de Papéis",s:5,vend:12,sup:9,dev:6,fin:8,rh:6,inf:8},
+  {d:"Qualidade da Liderança",s:4,vend:15,sup:12,dev:7,fin:8,rh:9,inf:7},
+  {d:"Recompensas",s:4,vend:14,sup:11,dev:8,fin:10,rh:8,inf:7},
+  {d:"Burnout",s:5,vend:22,sup:18,dev:9,fin:8,rh:7,inf:6},
+  {d:"Estresse",s:5,vend:20,sup:16,dev:10,fin:7,rh:6,inf:8},
+  {d:"Problemas de Sono",s:5,vend:14,sup:12,dev:7,fin:5,rh:5,inf:5},
+  {d:"Comportamentos Ofensivos",s:5,vend:8,sup:21,dev:3,fin:3,rh:3,inf:3},
+  {d:"Insegurança Laboral",s:3,vend:10,sup:8,dev:8,fin:14,rh:7,inf:9},
+  {d:"Satisfação Laboral",s:2,vend:5,sup:5,dev:8,fin:10,rh:11,inf:8},
+  {d:"Conflito Trabalho-Família",s:4,vend:15,sup:11,dev:7,fin:6,rh:5,inf:6},
+  {d:"Saúde Geral",s:4,vend:10,sup:9,dev:7,fin:7,rh:6,inf:6},
+];
+
+const CURTA=[
+  [1,"N","Exigências Quantitativas","A sua carga de trabalho acumula-se por ser mal distribuída?"],
+  [2,"N","Exigências Quantitativas","Com que frequência não tem tempo para completar todas as tarefas?"],
+  [3,"N","Ritmo de Trabalho","Precisa trabalhar muito rapidamente?"],
+  [4,"N","Exigências Cognitivas","O seu trabalho exige a sua atenção constante?"],
+  [5,"N","Exigências Cognitivas","O seu trabalho exige que tome decisões difíceis?"],
+  [6,"N","Exigências Emocionais","O seu trabalho exige emocionalmente de si?"],
+  [7,"P","Influência no Trabalho","Tem um elevado grau de influência no seu trabalho?"],
+  [8,"P","Possibilidades de Desenvolvimento","O seu trabalho exige que tenha iniciativa?"],
+  [9,"P","Possibilidades de Desenvolvimento","O seu trabalho permite-lhe aprender coisas novas?"],
+  [10,"P","Previsibilidade","É informado com antecedência sobre decisões importantes?"],
+  [11,"P","Previsibilidade","Recebe toda a informação para fazer bem o seu trabalho?"],
+  [12,"P","Transparência de Papel","Sabe exactamente quais as suas responsabilidades?"],
+  [13,"P","Recompensas","O seu trabalho é reconhecido e apreciado pela gerência?"],
+  [14,"P","Justiça e Respeito","É tratado de forma justa no seu local de trabalho?"],
+  [15,"P","Apoio Social de Superiores","Com que frequência tem ajuda e apoio do seu superior imediato?"],
+  [16,"P","Apoio Social de Colegas","Existe um bom ambiente de trabalho entre si e os seus colegas?"],
+  [17,"P","Qualidade da Liderança","Oferece aos indivíduos e ao grupo boas oportunidades de desenvolvimento?"],
+  [18,"P","Qualidade da Liderança","É bom no planeamento do trabalho?"],
+  [19,"P","Confiança Vertical","A gerência confia nos seus funcionários para fazerem o seu trabalho?"],
+  [20,"P","Confiança Vertical","Confia na informação que lhe é transmitida pela gerência?"],
+  [21,"P","Comunidade Social no Trabalho","Os conflitos são resolvidos de uma forma justa?"],
+  [22,"P","Comunidade Social no Trabalho","O trabalho é igualmente distribuído pelos funcionários?"],
+  [23,"P","Autoeficácia","Sou sempre capaz de resolver problemas, se tentar o suficiente."],
+  [24,"P","Significado do Trabalho","O seu trabalho tem algum significado para si?"],
+  [25,"P","Significado do Trabalho","Sente que o seu trabalho é importante?"],
+  [26,"P","Compromisso com o Trabalho","Sente que os problemas do local de trabalho são seus também?"],
+  [27,"P","Satisfação Laboral","Quão satisfeito está com o seu trabalho de uma forma global?"],
+  [28,"N","Insegurança Laboral","Sente-se preocupado em ficar desempregado?"],
+  [29,"N","Saúde Geral","Em geral, sente que a sua saúde é: [Excelente=1 / Deficitária=5]"],
+  [30,"N","Conflito Trabalho-Família","O trabalho exige muita energia que afecta a vida privada?"],
+  [31,"N","Conflito Trabalho-Família","O trabalho exige muito tempo que afecta a vida privada?"],
+  [32,"N","Problemas de Sono","Acordou várias vezes durante a noite sem conseguir adormecer?"],
+  [33,"N","Burnout","Fisicamente exausto?"],
+  [34,"N","Burnout","Emocionalmente exausto?"],
+  [35,"N","Estresse","Irritado?"],
+  [36,"N","Estresse","Ansioso?"],
+  [37,"N","Estresse","Triste?"],
+  [38,"N","Comportamentos Ofensivos","Tem sido alvo de insultos ou provocações verbais?"],
+  [39,"N","Comportamentos Ofensivos","Tem sido exposto a assédio sexual indesejado?"],
+  [40,"N","Comportamentos Ofensivos","Tem sido exposto a ameaças de violência?"],
+  [41,"N","Comportamentos Ofensivos","Tem sido exposto a violência física?"],
+];
+
+const MEDIA=[
+  [1,"N","Exigências Quantitativas","A sua carga de trabalho acumula-se por ser mal distribuída?"],
+  [2,"N","Exigências Quantitativas","Com que frequência não tem tempo para completar todas as tarefas?"],
+  [3,"N","Exigências Quantitativas","Precisa fazer horas-extra?"],
+  [4,"N","Ritmo de Trabalho","Precisa trabalhar muito rapidamente?"],
+  [5,"N","Exigências Cognitivas","O seu trabalho exige a sua atenção constante?"],
+  [6,"P","Exigências Cognitivas","O seu trabalho requer que seja bom a propor novas ideias?"],
+  [7,"N","Exigências Cognitivas","O seu trabalho exige que tome decisões difíceis?"],
+  [8,"N","Exigências Emocionais","O seu trabalho exige emocionalmente de si?"],
+  [9,"P","Influência no Trabalho","Tem um elevado grau de influência no seu trabalho?"],
+  [10,"P","Influência no Trabalho","Participa na escolha das pessoas com quem trabalha?"],
+  [11,"P","Influência no Trabalho","Pode influenciar a quantidade de trabalho que lhe compete?"],
+  [12,"P","Influência no Trabalho","Tem alguma influência sobre o tipo de tarefas que faz?"],
+  [13,"P","Possibilidades de Desenvolvimento","O seu trabalho exige que tenha iniciativa?"],
+  [14,"P","Possibilidades de Desenvolvimento","O seu trabalho permite-lhe aprender coisas novas?"],
+  [15,"P","Possibilidades de Desenvolvimento","O seu trabalho permite-lhe usar as suas habilidades?"],
+  [16,"P","Previsibilidade","É informado com antecedência sobre decisões importantes?"],
+  [17,"P","Previsibilidade","Recebe toda a informação para fazer bem o seu trabalho?"],
+  [18,"P","Transparência de Papel","O seu trabalho apresenta objectivos claros?"],
+  [19,"P","Transparência de Papel","Sabe exactamente quais as suas responsabilidades?"],
+  [20,"P","Transparência de Papel","Sabe exactamente o que é esperado de si?"],
+  [21,"P","Recompensas","O seu trabalho é reconhecido e apreciado pela gerência?"],
+  [22,"P","Recompensas","A gerência do seu local de trabalho respeita-o?"],
+  [23,"P","Recompensas","É tratado de forma justa no seu local de trabalho?"],
+  [24,"N","Conflito de Papéis","Faz coisas que uns concordam mas outros não? [ajustado]"],
+  [25,"N","Conflito de Papéis","Por vezes tem que fazer coisas que deveriam ser feitas de outra maneira?"],
+  [26,"N","Conflito de Papéis","Por vezes tem que fazer coisas que considera desnecessárias?"],
+  [27,"P","Apoio Social de Colegas","Com que frequência tem ajuda e apoio dos seus colegas?"],
+  [28,"P","Apoio Social de Colegas","Com que frequência os seus colegas estão dispostos a ouvi-lo?"],
+  [29,"P","Apoio Social de Colegas","Com que frequência os seus colegas falam consigo sobre o desempenho?"],
+  [30,"P","Apoio Social de Superiores","Com que frequência o superior fala consigo sobre como está a decorrer?"],
+  [31,"P","Apoio Social de Superiores","Com que frequência tem ajuda e apoio do seu superior imediato?"],
+  [32,"P","Apoio Social de Superiores","Com que frequência o superior fala consigo sobre o desempenho laboral?"],
+  [33,"P","Comunidade Social no Trabalho","Existe um bom ambiente de trabalho entre si e os seus colegas?"],
+  [34,"P","Comunidade Social no Trabalho","Existe uma boa cooperação entre os colegas de trabalho?"],
+  [35,"P","Comunidade Social no Trabalho","No seu local de trabalho sente-se parte de uma comunidade?"],
+  [36,"P","Qualidade da Liderança","Oferece aos indivíduos e ao grupo boas oportunidades de desenvolvimento?"],
+  [37,"P","Qualidade da Liderança","Dá prioridade à satisfação no trabalho?"],
+  [38,"P","Qualidade da Liderança","É bom no planeamento do trabalho?"],
+  [39,"P","Qualidade da Liderança","É bom a resolver conflitos?"],
+  [40,"N","Confiança Horizontal","Os funcionários ocultam informações uns dos outros?"],
+  [41,"N","Confiança Horizontal","Os funcionários ocultam informação à gerência?"],
+  [42,"P","Confiança Horizontal","Os funcionários confiam uns nos outros de um modo geral?"],
+  [43,"P","Confiança Vertical","A gerência confia nos seus funcionários para fazerem o trabalho?"],
+  [44,"P","Confiança Vertical","Confia na informação que lhe é transmitida pela gerência?"],
+  [45,"N","Confiança Vertical","A gerência oculta informação aos seus funcionários?"],
+  [46,"P","Justiça e Respeito","Os conflitos são resolvidos de uma forma justa?"],
+  [47,"P","Justiça e Respeito","As sugestões dos funcionários são tratadas de forma séria?"],
+  [48,"P","Justiça e Respeito","O trabalho é igualmente distribuído pelos funcionários?"],
+  [49,"P","Autoeficácia","Sou sempre capaz de resolver problemas, se tentar o suficiente."],
+  [50,"P","Autoeficácia","É-me fácil seguir os meus planos e atingir os meus objectivos."],
+  [51,"P","Significado do Trabalho","O seu trabalho tem algum significado para si?"],
+  [52,"P","Significado do Trabalho","Sente que o seu trabalho é importante?"],
+  [53,"P","Compromisso com o Trabalho","Sente-se motivado e envolvido com o seu trabalho?"],
+  [54,"P","Compromisso com o Trabalho","Gosta de falar com os outros sobre o seu local de trabalho?"],
+  [55,"P","Compromisso com o Trabalho","Sente que os problemas do local de trabalho são seus também?"],
+  [56,"P","Satisfação Laboral","Quão satisfeito com as suas perspectivas de trabalho?"],
+  [57,"P","Satisfação Laboral","Quão satisfeito com as condições físicas do local de trabalho?"],
+  [58,"P","Satisfação Laboral","A forma como as suas capacidades são utilizadas?"],
+  [59,"P","Satisfação Laboral","O seu trabalho de uma forma global?"],
+  [60,"N","Insegurança Laboral","Sente-se preocupado em ficar desempregado?"],
+  [61,"N","Saúde Geral","Em geral, sente que a sua saúde é: [Excelente=1 / Deficitária=5]"],
+  [62,"N","Conflito Trabalho-Família","O trabalho exige muita energia que afecta a vida privada?"],
+  [63,"N","Conflito Trabalho-Família","O trabalho exige muito tempo que afecta a vida privada?"],
+  [64,"N","Conflito Trabalho-Família","A sua família diz-lhe que trabalha demais?"],
+  [65,"N","Problemas de Sono","Dificuldade a adormecer?"],
+  [66,"N","Problemas de Sono","Acordou várias vezes durante a noite sem conseguir adormecer?"],
+  [67,"N","Burnout","Fisicamente exausto?"],
+  [68,"N","Burnout","Emocionalmente exausto?"],
+  [69,"N","Estresse","Irritado?"],
+  [70,"N","Estresse","Ansioso?"],
+  [71,"N","Estresse","Triste?"],
+  [72,"N","Estresse","Falta de interesse por coisas quotidianas?"],
+  [73,"N","Comportamentos Ofensivos","Tem sido alvo de insultos ou provocações verbais?"],
+  [74,"N","Comportamentos Ofensivos","Tem sido exposto a assédio sexual indesejado?"],
+  [75,"N","Comportamentos Ofensivos","Tem sido exposto a ameaças de violência?"],
+  [76,"N","Comportamentos Ofensivos","Tem sido exposto a violência física?"],
+];
+
+const LONGA_RESUMO=[
+  [1,"N","Exigências Quantitativas","A sua carga de trabalho acumula-se por ser mal distribuída?"],
+  [2,"N","Exigências Quantitativas","Com que frequência não tem tempo para completar todas as tarefas?"],
+  [3,"N","Exigências Quantitativas","Precisa fazer horas-extra?"],
+  [4,"N","Ritmo de Trabalho","Precisa trabalhar muito rapidamente?"],
+  [5,"N","Exigências Cognitivas","O seu trabalho exige a sua atenção constante?"],
+  [6,"N","Exigências Cognitivas","O seu trabalho requer que seja bom a propor novas ideias?"],
+  [7,"N","Exigências Cognitivas","O seu trabalho exige que tome decisões difíceis?"],
+  [8,"N","Exigências Emocionais","O seu trabalho coloca-o em situações emocionalmente perturbadoras?"],
+  [9,"N","Exigências Emocionais","O seu trabalho exige emocionalmente de si?"],
+  [10,"N","Exigências Emocionais","Sente-se emocionalmente envolvido com o seu trabalho?"],
+  [11,"N","Esconder Emoções","O seu trabalho requer que não manifeste a sua opinião?"],
+  [12,"N","Esconder Emoções","O seu trabalho requer que esconda os seus sentimentos?"],
+  [13,"N","Esconder Emoções","É-lhe exigido que trate todas as pessoas de forma igual embora não se sinta satisfeito?"],
+  [14,"N","Esconder Emoções","É-lhe exigido que seja simpático com todos, embora não lhe seja retribuído?"],
+  [15,"P","Influência no Trabalho","Tem um elevado grau de influência no seu trabalho?"],
+  [16,"P","Influência no Trabalho","Participa na escolha das pessoas com quem trabalha?"],
+  [17,"P","Influência no Trabalho","Pode influenciar a quantidade de trabalho que lhe compete?"],
+  [18,"P","Influência no Trabalho","Tem alguma influência sobre o tipo de tarefas que faz?"],
+  [19,"P","Possibilidades de Desenvolvimento","O seu trabalho exige que tenha iniciativa?"],
+  [20,"P","Possibilidades de Desenvolvimento","O seu trabalho permite-lhe aprender coisas novas?"],
+  [21,"P","Possibilidades de Desenvolvimento","O seu trabalho permite-lhe usar as suas habilidades?"],
+  [22,"P","Variação no Trabalho","O seu trabalho é variado?"],
+  [23,"P","Previsibilidade","É informado com antecedência sobre decisões importantes?"],
+  [24,"P","Previsibilidade","Recebe toda a informação para fazer bem o seu trabalho?"],
+  [25,"P","Transparência de Papel","O seu trabalho apresenta objectivos claros?"],
+  [26,"P","Transparência de Papel","Sabe exactamente quais as suas responsabilidades?"],
+  [27,"P","Transparência de Papel","Sabe exactamente o que é esperado de si?"],
+  [28,"P","Recompensas","O seu trabalho é reconhecido e apreciado pela gerência?"],
+  [29,"P","Recompensas","Há boas perspectivas no seu emprego?"],
+  [30,"P","Recompensas","A gerência do seu local de trabalho respeita-o?"],
+  [31,"P","Recompensas","É tratado de forma justa no seu local de trabalho?"],
+  [32,"P","Conflito de Papéis","Faz coisas no seu trabalho que uns concordam mas outros não?"],
+  [33,"P","Conflito de Papéis","No seu trabalho são-lhe colocadas exigências contraditórias?"],
+  [34,"P","Conflito de Papéis","Por vezes tem que fazer coisas que deveriam ser feitas de outra maneira?"],
+  [35,"P","Conflito de Papéis","Por vezes tem que fazer coisas que considera desnecessárias?"],
+  [36,"P","Apoio Social de Colegas","Com que frequência tem ajuda e apoio dos seus colegas?"],
+  [37,"N","Apoio Social de Colegas","Com que frequência os seus colegas estão dispostos a ouvi-lo?"],
+  [38,"N","Apoio Social de Colegas","Com que frequência os seus colegas falam consigo sobre o desempenho?"],
+  [39,"N","Apoio Social de Superiores","Com que frequência o superior fala consigo sobre como está a decorrer?"],
+  [40,"N","Apoio Social de Superiores","Com que frequência tem ajuda e apoio do seu superior imediato?"],
+  [41,"P","Apoio Social de Superiores","Com que frequência o superior fala consigo sobre o desempenho?"],
+  [42,"P","Comunidade Social no Trabalho","Existe um bom ambiente de trabalho entre si e os seus colegas?"],
+  [43,"P","Comunidade Social no Trabalho","Existe uma boa cooperação entre os colegas de trabalho?"],
+  [44,"P","Comunidade Social no Trabalho","No seu local de trabalho sente-se parte de uma comunidade?"],
+  [45,"P","Qualidade da Liderança","Oferece aos indivíduos e ao grupo boas oportunidades de desenvolvimento?"],
+  [46,"P","Qualidade da Liderança","Dá prioridade à satisfação no trabalho?"],
+  [47,"P","Qualidade da Liderança","É bom no planeamento do trabalho?"],
+  [48,"P","Qualidade da Liderança","É bom a resolver conflitos?"],
+  [49,"P","Confiança Horizontal","Os funcionários ocultam informações uns dos outros?"],
+  [50,"P","Confiança Horizontal","Os funcionários ocultam informação à gerência?"],
+  [51,"N","Confiança Horizontal","Os funcionários confiam uns nos outros de um modo geral?"],
+  [52,"N","Confiança Vertical","A gerência confia nos seus funcionários para fazerem o trabalho?"],
+  [53,"N","Confiança Vertical","Confia na informação que lhe é transmitida pela gerência?"],
+  [54,"N","Confiança Vertical","A gerência oculta informação aos seus funcionários?"],
+  [55,"P","Justiça e Respeito","Os conflitos são resolvidos de uma forma justa?"],
+  [56,"P","Justiça e Respeito","Os funcionários são apreciados quando fazem um bom trabalho?"],
+  [57,"P","Justiça e Respeito","As sugestões dos funcionários são tratadas de forma séria?"],
+  [58,"P","Justiça e Respeito","O trabalho é igualmente distribuído pelos funcionários?"],
+  [59,"N","Responsabilidade Social","Os homens e as mulheres são tratados da mesma forma?"],
+  [60,"N","Responsabilidade Social","Existe lugar para funcionários de diferentes raças e religiões?"],
+  [61,"N","Responsabilidade Social","Existe lugar para funcionários com doenças ou deficiências?"],
+  [62,"N","Responsabilidade Social","Existe lugar para funcionários da terceira idade?"],
+  [63,"N","Significado do Trabalho","O seu trabalho tem significado?"],
+  [64,"P","Significado do Trabalho","Sente que o seu trabalho é importante?"],
+  [65,"P","Compromisso com o Trabalho","Sente-se motivado e envolvido com o seu trabalho?"],
+  [66,"P","Compromisso com o Trabalho","Gosta de falar com os outros sobre o seu local de trabalho?"],
+  [67,"P","Compromisso com o Trabalho","Sente que os problemas do local de trabalho são seus também?"],
+  [68,"P","Compromisso com o Trabalho","O seu local de trabalho é de grande importância pessoal para si?"],
+  [69,"P","Satisfação Laboral","Quão satisfeito com as suas perspectivas de trabalho?"],
+  [70,"P","Satisfação Laboral","Quão satisfeito com as condições físicas do local de trabalho?"],
+  [71,"P","Satisfação Laboral","A forma como as suas capacidades são utilizadas?"],
+  [72,"P","Satisfação Laboral","O seu trabalho de uma forma global?"],
+  [73,"P","Insegurança Laboral","Sente-se preocupado com ficar desempregado?"],
+  [74,"P","Insegurança Laboral","Que uma nova tecnologia o torne dispensável?"],
+  [75,"P","Insegurança Laboral","Dificuldade em conseguir outro trabalho caso ficasse desempregado?"],
+  [76,"P","Insegurança Laboral","Ser transferido para outro local de trabalho contra a sua vontade?"],
+  [77,"N","Saúde Geral","Em geral, sente que a sua saúde é: [Excelente=1 / Deficitária=5]"],
+  [78,"P","Conflito Trabalho-Família","O trabalho exige muita energia que afecta a vida privada?"],
+  [79,"P","Conflito Trabalho-Família","O trabalho exige muito tempo que afecta a vida privada?"],
+  [80,"P","Conflito Trabalho-Família","A sua família diz-lhe que trabalha demais?"],
+  [81,"P","Conflito Família-Trabalho","A vida privada exige muita energia e afecta o trabalho?"],
+  [82,"P","Conflito Família-Trabalho","A vida privada exige muito tempo e afecta o trabalho?"],
+  [83,"P","Problemas de Sono","Dificuldade a adormecer?"],
+  [84,"P","Problemas de Sono","Dormiu mal e de forma sobressaltada?"],
+  [85,"P","Problemas de Sono","Acordou demasiado cedo com dificuldade em adormecer?"],
+  [86,"P","Problemas de Sono","Acordou várias vezes durante a noite sem conseguir adormecer?"],
+  [87,"N","Burnout","Cansado?"],
+  [88,"N","Burnout","Esgotado?"],
+  [89,"N","Burnout","Fisicamente exausto?"],
+  [90,"N","Burnout","Emocionalmente exausto?"],
+  [91,"N","Estresse","Dificuldades em relaxar?"],
+  [92,"N","Estresse","Irritado?"],
+  [93,"N","Estresse","Tenso?"],
+  [94,"N","Estresse","Ansioso?"],
+  [95,"N","Sintomas Depressivos","Triste?"],
+  [96,"N","Sintomas Depressivos","Falta de auto-confiança?"],
+  [97,"N","Sintomas Depressivos","Peso na consciência ou sentimento de culpa?"],
+  [98,"N","Sintomas Depressivos","Falta de interesse por coisas quotidianas?"],
+  [99,"N","Estresse Somático","Dores de barriga?"],
+  [100,"N","Estresse Somático","Aperto ou dor no peito?"],
+  [101,"N","Estresse Somático","Dores de cabeça?"],
+  [102,"N","Estresse Somático","Palpitações?"],
+  [103,"N","Estresse Somático","Tensão em vários músculos?"],
+  [104,"N","Estresse Cognitivo","Dificuldade em concentrar-se?"],
+  [105,"N","Estresse Cognitivo","Dificuldade em tomar decisões?"],
+  [106,"N","Estresse Cognitivo","Dificuldade em lembrar-se de algo?"],
+  [107,"N","Estresse Cognitivo","Dificuldade em pensar claramente?"],
+  [108,"N","Autoeficácia","Sou sempre capaz de resolver problemas, se tentar o suficiente."],
+  [109,"N","Autoeficácia","Mesmo que as pessoas trabalhem contra mim, encontro forma de atingir o que pretendo."],
+  [110,"N","Autoeficácia","É-me fácil seguir os meus planos e atingir os meus objectivos."],
+  [111,"N","Autoeficácia","Sinto-me confiante em lidar com acontecimentos inesperados."],
+  [112,"N","Autoeficácia","Quando tenho um problema, tenho várias maneiras de lidar com o mesmo."],
+  [113,"N","Autoeficácia","Independentemente do que acontecer, costumo encontrar soluções."],
+  [114,"N","Comportamentos Ofensivos","Tem-se envolvido em conflitos ou discussões?"],
+  [115,"N","Comportamentos Ofensivos","Tem sido alvo de rumores ou calúnias?"],
+  [116,"N","Comportamentos Ofensivos","Tem sido alvo de insultos ou provocações verbais?"],
+  [117,"N","Comportamentos Ofensivos","Tem sido exposto a assédio sexual indesejado?"],
+  [118,"N","Comportamentos Ofensivos","Tem sido exposto a ameaças de violência?"],
+  [119,"N","Comportamentos Ofensivos","Tem sido exposto a violência física?"],
+];
+
+const PERFIS=[
+  ["01","Administrativo / Escritório / Home Office","Trabalho com computador, teclado e mouse","M-VDT","D1, D2, D4"],
+  ["02","Telemarketing / Call Center / Voz","Atendimento por voz — headset","M-VDT + M-VOZ","D1, D2, D4, D5"],
+  ["03","Checkout / Operador de Caixa","Caixa registradora — movimento repetitivo","M-VDT + M-REP","D1, D2"],
+  ["04","Atendimento Presencial / Recepção","Atendimento em pé com balcão","M-CFM","D1, D3, D4"],
+  ["05","Repositor / Promotor de Loja","Reposição em prateleiras altas e baixas","M-CFM + M-PEX","D1, D3"],
+  ["06","Logística / Estoque / Separação","Movimentação de cargas em estoque","M-CFP","D1, D3, D4"],
+  ["07","Motorista / Operador de Veículo","Direção por longos períodos","M-VIB + M-TUR","D1, D4, D5"],
+  ["08","Operador de Empilhadeira / Paleteira","Vibração + postura cervical","M-VIB","D1, D2, D4"],
+  ["09","Linha de Montagem / Produção Seriada","Ciclos repetitivos fixos","M-REP","D1, D2, D5"],
+  ["10","Operador de Máquinas Industriais","Postura estática e ruído","M-REP + M-VIB","D1, D2, D4"],
+  ["11","Soldagem / Corte / Acabamento","Posturas extremas e EPI pesado","M-PEX + M-CAL","D1, D4"],
+  ["12","Processos com Exposição Química/Térmica","Calor intenso e EPI restritivo","M-CAL","D1, D4"],
+  ["13","Construção Civil / Obras Pesadas","Altura, terreno irregular, cargas pesadas","M-CFP + M-PEX + M-CAM","D1, D3, D4"],
+  ["14","Manutenção / Trabalho em Altura","Espaços confinados, posições extremas (NR-33/35)","M-PEX","D1, D4"],
+  ["15","Assistência Direta ao Paciente","Mobilização de pacientes — carga assimétrica","M-PAC + M-EMO","D1, D3, D6"],
+  ["16","Clínico em Postura Estática / Odontologia","Postura estática prolongada, lupa","M-REP","D1, D2"],
+  ["17","Cozinha Industrial / Alimentação Coletiva","Calor intenso, piso escorregadio, cargas","M-CAL + M-CFM","D1, D3, D4"],
+  ["18","Serviço de Mesa / Hotelaria / Camareira","Flexão repetida, bandeja, limpeza","M-CFM","D1, D3"],
+  ["19","Limpeza e Conservação","Movimentos repetitivos, mop/vassoura","M-REP + M-CFM","D1, D2, D3"],
+  ["20","Professor / Educador / Instrutor","Uso intenso da voz, braço elevado","M-VOZ","D1, D5"],
+  ["21","Psicólogo / Assistente Social / Saúde Mental","Carga emocional, fadiga por compaixão","M-EMO","D5, D6"],
+  ["22","Trabalho Rural / Agronegócio","Calor, agrotóxicos, maquinário agrícola","M-CAL + M-CAM + M-VIB","D1, D3, D4"],
+  ["23","Trabalho Externo Urbano / Campo Técnico","Deslocamento com carga, altura (postes/torres)","M-CAM + M-PEX","D1, D3, D4"],
+];
+
+function nlv(s){return s>=17?"Crítico":s>=10?"Alto":s>=5?"Moderado":"Baixo"}
+function bcls(s){const n=nlv(s);return n==="Crítico"?"bc":n==="Alto"?"ba":n==="Moderado"?"bm":"bb"}
+function bfcls(s){const n=nlv(s);return n==="Crítico"?"bfc":n==="Alto"?"bfa":n==="Moderado"?"bfm":"bfb"}
+function bw(s){return Math.min(100,Math.round(s/25*100))}
+
+function adjSev(b,mr){
+  if(b===5)return mr>=3?5:4;
+  if(b===4)return mr>=4.5?5:mr<2?3:4;
+  if(b===3)return mr>=4?4:mr<2?2:3;
+  if(b===2)return mr>=4.5?4:mr>=3.5?3:2;
+  return 1;
+}
+
+const charts={};
+function mkChart(id,type,labels,datasets,opts){
+  if(charts[id])charts[id].destroy();
+  const ctx=document.getElementById(id);
+  if(!ctx)return;
+  charts[id]=new Chart(ctx,{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:datasets.length>1,position:'bottom',labels:{font:{size:10},boxWidth:10}}},scales:type==='radar'?{r:{min:0,max:25,ticks:{font:{size:9}}}}:{y:{min:0,max:25,beginAtZero:true,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}},...opts}});
+}
+
+function initDash(){
+  const setores=['Desenv.','Vendas','Suporte','Financ.','RH','Infra'];
+  const maxPsi=[[8,22,16,7,5,6],[10,17,13,8,5,7],[13,8,9,7,6,14],[7,20,16,5,9,5],[9,22,18,8,7,6],[10,20,16,7,6,8]];
+  const maxBySetor=[0,1,2,3,4,5].map(i=>Math.max(...maxPsi.map(r=>r[i])));
+  mkChart('ch-psi','bar',setores,[{label:'Pior score PSI',data:maxBySetor,backgroundColor:maxBySetor.map(v=>v>=17?'#E24B4A':v>=10?'#EF9F27':'#639922'),borderRadius:4}]);
+  const postos=['Vend-01','Vend-02','Sup-01','Dev-01','Dev-02','Fin-01','Infra-01'];
+  const ergD=[19,17,15,14,16,10,16];
+  mkChart('ch-erg','bar',postos,[{label:'Score SREC',data:ergD,backgroundColor:ergD.map(v=>v>=17?'#E24B4A':v>=10?'#EF9F27':'#639922'),borderRadius:4}]);
+  mkChart('ch-radar','radar',['Exig. Quant.','Burnout','Estresse','Liderança','Comp. Ofensivos','Recompensas'],[
+    {label:'Vendas',data:[22,22,20,15,8,14],borderColor:'#E24B4A',backgroundColor:'rgba(226,75,74,0.1)'},
+    {label:'Suporte',data:[16,18,16,12,21,11],borderColor:'#EF9F27',backgroundColor:'rgba(239,159,39,0.1)'},
+    {label:'Desenv.',data:[8,9,10,7,3,8],borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.1)'},
+  ]);
+}
+
+function initCiclos(){
+  mkChart('ch-evol','line',['AEPP','M1','M3','M5'],[
+    {label:'Burnout — Vendas',data:[22,19,16,12],borderColor:'#E24B4A',tension:0.3,fill:false},
+    {label:'Comp.Ofensivos — Suporte',data:[21,18,15,12],borderColor:'#EF9F27',tension:0.3,fill:false},
+  ]);
+}
+
+function initParecer(){
+  mkChart('ch-par','line',['AEPP','M1','M2','M3','M4','M5','M6'],[
+    {label:'Vendas',data:[22,19,null,16,null,13,11],borderColor:'#E24B4A',tension:0.3,fill:false,spanGaps:true},
+    {label:'Suporte',data:[21,18,null,15,null,12,10],borderColor:'#EF9F27',tension:0.3,fill:false,spanGaps:true},
+    {label:'Desenv.',data:[13,null,12,null,10,null,9],borderColor:'#378ADD',tension:0.3,fill:false,spanGaps:true},
+    {label:'Financeiro',data:[14,null,12,null,10,null,7],borderColor:'#639922',tension:0.3,fill:false,spanGaps:true},
+  ]);
+}
+
+const lkVals={};
+function mkQuestoes(qs,containerId,prefix){
+  const c=document.getElementById(containerId);
+  if(!c||c.dataset.r)return;
+  c.dataset.r='1';
+  c.innerHTML=qs.map(([n,pol,dim,txt])=>`
+    <div class="qrow">
+      <div class="qnum">${n}</div>
+      <div class="qtxt">${txt}<div class="qdim">${dim} · <span style="color:${pol==='N'?'#A32D2D':'#3B6D11'};font-weight:500">${pol}</span></div></div>
+      <div class="lks">${[1,2,3,4,5].map(v=>`<div class="lk" onclick="pickLk(this,'${prefix}${n}',${v})">${v}</div>`).join('')}</div>
+    </div>`).join('');
+}
+function pickLk(el,k,v){el.closest('.lks').querySelectorAll('.lk').forEach(l=>l.classList.remove('sel'));el.classList.add('sel');lkVals[k]=v;}
+
+function initCopsoq(){
+  mkQuestoes(CURTA.slice(0,8),'q-exig','e');
+  mkQuestoes(CURTA.slice(6,14),'q-auto','a');
+  mkQuestoes(CURTA.slice(14,22),'q-rel','r');
+  mkQuestoes(CURTA.slice(28,37),'q-saude','s');
+  calcCopsoq();
+}
+
+function calcCopsoq(){
+  const sevMap={'Exigências Quantitativas':4,'Ritmo de Trabalho':4,'Exigências Cognitivas':4,'Exigências Emocionais':5,'Burnout':5,'Estresse':5,'Problemas de Sono':5,'Conflito Trabalho-Família':4,'Saúde Geral':4,'Comportamentos Ofensivos':5,'Insegurança Laboral':3,'Satisfação Laboral':2,'Autoeficácia':3,'Significado do Trabalho':3};
+  const byDim={};
+  CURTA.slice(0,37).forEach(([n,pol,dim])=>{
+    const v=lkVals['e'+n]||lkVals['a'+n]||lkVals['r'+n]||lkVals['s'+n]||3;
+    if(!byDim[dim])byDim[dim]={vals:[],pol};
+    byDim[dim].vals.push(v);byDim[dim].pol=pol;
+  });
+  const el=document.getElementById('cop-scores');
+  if(!el)return;
+  el.innerHTML=Object.entries(byDim).map(([dim,{vals,pol}])=>{
+    const med=vals.reduce((a,b)=>a+b,0)/vals.length;
+    const mr=pol==='N'?med:6-med;
+    const sev=sevMap[dim]||3;
+    const sa=adjSev(sev,mr);
+    const sc=Math.min(25,Math.round(mr*sa));
+    return `<div class="drow"><div class="dname">${dim}</div><div style="font-size:10px;color:var(--color-text-secondary);width:120px">med=${med.toFixed(1)} MR=${mr.toFixed(1)} ×${sa}</div><div class="dscore" style="color:${sc>=17?'#A32D2D':sc>=10?'#854F0B':'#3B6D11'}">${sc}</div><div class="bw"><div class="bf ${bfcls(sc)}" style="width:${bw(sc)}%"></div></div><span class="badge ${bcls(sc)}">${nlv(sc)}</span></div>`;
+  }).join('');
+}
+
+function initInventario(){
+  const setores=['vend','sup','dev','fin','rh','inf'];
+  const nomes=['Vendas','Suporte','Desenvolvimento','Financeiro','RH','Infraestrutura'];
+  let html='';
+  setores.forEach((s,i)=>{
+    const altas=DIMS.filter(d=>d[s]>=10).sort((a,b)=>b[s]-a[s]);
+    if(!altas.length)return;
+    html+=`<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:500;margin-bottom:4px">${nomes[i]}</div>`;
+    altas.forEach(d=>{const v=d[s];html+=`<div class="drow"><div class="dname">${d.d}</div><div class="dscore">${v}</div><div class="bw"><div class="bf ${bfcls(v)}" style="width:${bw(v)}%"></div></div><span class="badge ${bcls(v)}">${nlv(v)}</span></div>`;});
+    html+='</div>';
+  });
+  document.getElementById('inv-psi-tbl').innerHTML=html;
+}
+
+function mkPlan(itens){
+  return itens.map(it=>`
+    <div class="plan-item">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="badge ${it.nivel==="CRÍTICO"?"bc":"ba"}">${it.nivel} — ${it.score}/25</span>
+        <strong style="font-size:13px">${it.dim}</strong>
+        <span style="font-size:11px;color:var(--color-text-secondary);margin-left:auto">Prazo: ${it.prazo}</span>
+      </div>
+      ${it.vc?`<div style="font-size:11px;background:var(--color-background-info);color:var(--color-text-info);padding:3px 7px;border-radius:5px;margin-bottom:6px">VC: ${it.vc}</div>`:''}
+      <div class="five-w">
+        <div class="fw"><div class="fw-k">O quê</div>${it.oq}</div>
+        <div class="fw"><div class="fw-k">Por quê</div>${it.pq}</div>
+        <div class="fw"><div class="fw-k">Quem</div>${it.qm}</div>
+        <div class="fw"><div class="fw-k">Onde</div>${it.on}</div>
+        <div class="fw"><div class="fw-k">Quando</div>${it.qd}</div>
+        <div class="fw"><div class="fw-k">Como</div>${it.cm}</div>
+        <div class="fw"><div class="fw-k">Quanto custa</div>${it.qt}</div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:var(--color-text-secondary)">Indicadores: ${it.ind} · Ref.: ${it.ref}</div>
+    </div>`).join('');
+}
+
+function initPlano(){
+  const psi=[
+    {dim:"Burnout",score:22,nivel:"CRÍTICO",prazo:"15 dias",vc:null,oq:"Implantação de programa de prevenção ao burnout",pq:"Score 22/25 — risco crítico associado a OR 1.85 de doença cardiovascular (CID-11 QD85)",qm:"Gestão de RH + Psicólogo Organizacional",on:"Setor de Vendas",qd:"Início em 15 dias",cm:"Pausas de 10 min a cada 50 min · canal de escuta semanal · avaliação WAI bimestral",qt:"Baixo — treinamento interno + material",ind:"Score Burnout bimestral ≤ 16 em M1 · % colaboradores com WAI ≥ 28",ref:"CID-11 QD85; NR-1 item 1.5.7; Maslach (1981)"},
+    {dim:"Exigências Emocionais",score:20,nivel:"CRÍTICO",prazo:"15 dias",vc:null,oq:"Revisão da política de atendimento emocional",pq:"Score 20/25 — OR 2.1–3.8 burnout em atendimento (Bakker & Demerouti, 2007)",qm:"Gestão de Vendas + RH",on:"Setor de Vendas",qd:"15 dias",cm:"Limite de chamadas emocionalmente desgastantes consecutivas · debrief em equipe",qt:"Baixo — reorganização de processos",ind:"Score Exig. Emocionais em M1 · Absenteísmo mensal",ref:"JD-R Model Bakker & Demerouti (2007); NR-17 §17.6.4"},
+    {dim:"Estresse",score:20,nivel:"CRÍTICO",prazo:"15 dias",vc:null,oq:"Implantação de canal de suporte psicológico",pq:"Score 20/25 — fator de risco para RR 1.60 doença coronária (McEwen 1998)",qm:"RH + Psicólogo contratado",on:"Setor de Vendas",qd:"15 dias",cm:"Canal semanal de escuta ativa · treinamento de gestores para identificar sinais",qt:"Médio — contratação de suporte psicológico externo",ind:"Score Estresse em M1 · Score Saúde Geral bimestral",ref:"McEwen (1998) Allostatic Load; NR-1 item 1.5.7"},
+    {dim:"Recompensas",score:14,nivel:"ALTO",prazo:"30 dias",vc:null,oq:"Revisão da política de reconhecimento",pq:"Score 14/25 — OR 1.8 doença coronária no desequilíbrio esforço-recompensa (Siegrist, 1996)",qm:"Gestão + RH",on:"Setor de Vendas",qd:"30 dias",cm:"Critérios transparentes · feedback regular · periodicidade definida de reconhecimento",qt:"Baixo",ind:"Score Recompensas em M1 · NPS interno trimestral",ref:"Siegrist (1996) ERI Model; ISO 45003:2021"},
+  ];
+  const erg=[
+    {dim:"D5 — Organização",score:17,nivel:"CRÍTICO",prazo:"15 dias",vc:null,oq:"Reestruturação da jornada com pausas obrigatórias",pq:"Score 17/25 — jornada 10h + turnos + metas rígidas. Fator de risco para LER e Burnout (NR-17 §17.6.3)",qm:"Gestão + SESMT",on:"Setor de Vendas — Posto Vend-01 e Vend-02",qd:"15 dias",cm:"Pausas de 10 min a cada 50 min de atendimento · eliminação de horas extras sistemáticas",qt:"Sem custo direto — reorganização",ind:"Score D5 na revisão M2 · Horas extras mensais",ref:"NR-17 §17.6.3 e §17.6.4; ISO 45003:2021"},
+    {dim:"D6 — Vulnerabilidade",score:18,nivel:"CRÍTICO",prazo:"15 dias",vc:"CS-3 ativa — WAI pobre (score 26)",oq:"Encaminhamento ao Médico do Trabalho e avaliação de adaptação funcional",pq:"WAI pobre — CS-3 ativa. Score D6 18/25. Risco de agravamento funcional.",qm:"RH + Médico do Trabalho (NR-07)",on:"Posto Vend-01",qd:"15 dias — urgente",cm:"Agendamento com Médico do Trabalho · avaliação de readaptação · monitoramento WAI bimestral",qt:"Sem custo adicional se PCMSO vigente",ind:"Score WAI em M2 · Score D6 em M2",ref:"Finnish Institute WAI (1998); NR-07; NR-1 item 1.5.7"},
+    {dim:"D2 — Repetitividade",score:12,nivel:"ALTO",prazo:"30 dias",vc:"OCRA=5.8 (risco leve-mod.) · 49 AT/min (acima de 40) · CS-4: formigamento",oq:"Implantação de rodízio de função para redução de AT/min",pq:"OCRA 5.8 acima do limite 2.2 (ISO 11228-3). Meta: reduzir de 49 para ≤ 40 AT/min.",qm:"Gestão + SESMT + Ergonomista",on:"Posto Vend-01",qd:"30 dias",cm:"Rodízio a cada 90 min · monitoramento por VC em M2 · exercícios de pausas ativas",qt:"Baixo — reorganização + treinamento",ind:"AT/min em M2 pela VC (meta ≤40) · Score OCRA em M2 (meta ≤2.2)",ref:"ISO 11228-3; OCRA Occhipinti (1998)"},
+    {dim:"D1 — Risco Postural",score:11,nivel:"ALTO",prazo:"30 dias",vc:"RULA=5 (segmento: pescoço/punho) · REBA=6",oq:"Ajuste ergonômico do posto e do headset",pq:"RULA 5 indica intervenção necessária em pescoço e punho. REBA 6 = risco médio.",qm:"Ergonomista + TI + Gestão",on:"Posto Vend-01",qd:"30 dias",cm:"Headset binaural alternado · monitor na altura dos olhos · suporte de punho",qt:"Baixo — equipamentos ergonômicos",ind:"Score RULA em M2 pela VC (meta ≤4) · Score D1 em M2",ref:"ISO 11226:2000; RULA McAtamney (1993); NR-17 §17.3"},
+  ];
+  document.getElementById('plano-psi-content').innerHTML=`<div class="alerti" style="margin-bottom:10px">Plano gerado pela Claude API — cada dimensão Alto/Crítico gera uma ação 5W2H INDEPENDENTE</div>`+mkPlan(psi);
+  document.getElementById('plano-erg-content').innerHTML=`<div class="alerti" style="margin-bottom:10px">Inclui dados brutos de VC (RULA, REBA, OCRA, AT/min) para recomendações mensuráveis</div>`+mkPlan(erg);
+}
+
+function initPerguntas(){
+  function render(qs,id){
+    const el=document.getElementById(id);
+    if(!el||el.dataset.r)return;
+    el.dataset.r='1';
+    let dim='',h='';
+    qs.forEach(([n,pol,d,txt])=>{
+      if(d!==dim){h+=`<div style="font-size:12px;font-weight:500;color:var(--color-text-info);margin:10px 0 4px;padding-bottom:3px;border-bottom:0.5px solid var(--color-border-tertiary)">${d}</div>`;dim=d;}
+      h+=`<div style="display:flex;gap:7px;padding:4px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px"><span style="color:var(--color-text-tertiary);width:22px;flex-shrink:0">${n}</span><span style="color:${pol==='N'?'#A32D2D':'#3B6D11'};width:14px;font-weight:500;flex-shrink:0">${pol}</span><span>${txt}</span></div>`;
+    });
+    el.innerHTML=h;
+  }
+  render(CURTA,'pq-curta-content');
+  render(MEDIA,'pq-media-content');
+  render(LONGA_RESUMO,'pq-longa-content');
+}
+
+function initPerfis(){
+  const tb=document.getElementById('perfis-tbody');
+  if(!tb||tb.dataset.r)return;
+  tb.dataset.r='1';
+  tb.innerHTML=PERFIS.map(([n,nome,atv,mods,dims])=>`<tr><td><span class="badge bi">${n}</span></td><td><strong style="font-size:11px">${nome}</strong></td><td style="color:var(--color-text-secondary)">${atv}</td><td style="color:var(--color-text-info)">${mods}</td><td style="font-weight:500">${dims}</td></tr>`).join('');
+}
+
+const D1state={rula:5,reba:6,owas:2,d1form:9,cs2:0};
+const D2state={ocra:5.8,d2f1:3,d2f2:1,d2f3:2,d2f4:1,cs4:0};
+const D3state={p:20,h:0.93,fr:0.75,as:1.0,borg:4,pp:0};
+const D4state={r:13,v:1,vc:1,t:2,a:2,pi:1};
+const D5state={j:8,he:5,r:6,ac:0,tu:9,vo:2,mo:5,ca:0};
+const D6state={w1:6,w2f:3,w2m:3,w3:2,w4:4,w5:3,w6:4,w7:7,cs3:0};
+let dScores={D1:11,D2:12,D3:3,D4:13,D5:17,D6:18};
+
+function updD1(){
+  const rula=parseInt(document.getElementById('rula').value);
+  const reba=parseInt(document.getElementById('reba').value);
+  const owas=parseInt(document.getElementById('owas').value);
+  const d1f=parseInt(document.getElementById('d1form').value);
+  const cs2=parseInt(document.getElementById('cs2').value);
+  document.getElementById('rv').textContent=rula;
+  document.getElementById('rv2').textContent=reba;
+  document.getElementById('d1fv').textContent=d1f;
+  const rulaS=rula<=2?3:rula<=4?7:rula<=6?13:21;
+  const rebaS=reba===1?2:reba<=3?4:reba<=7?7:reba<=10?13:21;
+  const owasS=[0,3,7,13,21][owas];
+  const d1vc=Math.max(rulaS,rebaS,owasS);
+  let d1=Math.round(d1vc*0.8+d1f*0.2)+(cs2?3:0);
+  d1=Math.min(25,d1);
+  dScores.D1=d1;
+  const n=nlv(d1);
+  document.getElementById('d1-res').innerHTML=`D1_VC = MAX(RULA→${rulaS}, REBA→${rebaS}, OWAS→${owasS}) = ${d1vc}<br>D1 = ${d1vc}×0.80 + ${d1f}×0.20${cs2?` + 3 (CS-2)`:''} = <strong>${d1} — ${n}</strong>`;
+  document.getElementById('d1-res').className=`rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}`;
+  updSrecRes();
+}
+
+function updD2(){
+  const ocra=parseFloat(document.getElementById('ocra').value);
+  const atmin=parseInt(document.getElementById('atmin').value);
+  const f1=parseInt(document.getElementById('d2f1').value);
+  const f2=parseInt(document.getElementById('d2f2').value);
+  const f3=parseInt(document.getElementById('d2f3').value);
+  const f4=parseInt(document.getElementById('d2f4').value);
+  const cs4=parseInt(document.getElementById('cs4').value);
+  document.getElementById('ocrav').textContent=ocra.toFixed(1);
+  document.getElementById('atv').textContent=atmin;
+  const ocraS=ocra<=2.2?3:ocra<=3.5?7:ocra<=9?13:21;
+  const soma=f1+f2+f3+f4;
+  const d2fMR=(soma/10)*5;
+  const d2fSev=adjSev(4,d2fMR);
+  const d2f=Math.min(25,Math.round(d2fMR*d2fSev));
+  let d2=Math.round(ocraS*0.6+d2f*0.4);
+  if(cs4)d2=Math.max(10,d2);
+  d2=Math.min(25,d2);
+  dScores.D2=d2;
+  const n=nlv(d2);
+  document.getElementById('d2-res').innerHTML=`D2_VC = OCRA ${ocra.toFixed(1)} → ${ocraS} | Form: ${soma}/10 → ${d2f}<br>D2 = ${ocraS}×0.60 + ${d2f}×0.40${cs4?' → CS-4: mín.10':''} = <strong>${d2} — ${n}</strong>${atmin>40?`<br><span style="font-size:10px;color:#A32D2D">AT/min=${atmin} > limite 40 (ISO 11228-3)</span>`:''}`;
+  document.getElementById('d2-res').className=`rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}`;
+  updSrecRes();
+}
+
+function updD3(){
+  const p=parseInt(document.getElementById('d3p').value);
+  const h=parseFloat(document.getElementById('d3h').value);
+  const fr=parseFloat(document.getElementById('d3fr').value);
+  const as_=parseFloat(document.getElementById('d3as').value);
+  const borg=parseInt(document.getElementById('borg').value);
+  const pp=parseInt(document.getElementById('d3pp').value);
+  document.getElementById('borgv').textContent=`${borg} — ${['Nenhum','Muito fraco','Fraco','Moderado','Algo forte','','Forte','','','Muito forte','Máximo'][borg]||borg}`;
+  const LC=23,HM=0.85,DM=0.87,CM=1.0;
+  const RWL=LC*HM*h*DM*as_*fr*CM;
+  const IL=p/RWL;
+  const nioshS=IL<1?3:IL<1.5?7:IL<3?13:21;
+  let d3=Math.max(nioshS,pp);
+  if(borg>=7)d3=Math.max(10,d3);
+  d3=Math.min(25,d3);
+  dScores.D3=d3;
+  const n=nlv(d3);
+  document.getElementById('d3-res').innerHTML=`RWL = ${RWL.toFixed(1)} kg | IL = ${p}/${RWL.toFixed(1)} = <strong>${IL.toFixed(2)}</strong> → ${nioshS}${borg>=7?' → CS-4 Borg≥7 → mín.10':''}${pp>nioshS?` → push/pull=${pp}`:''}<br>D3 = <strong>${d3} — ${n}</strong>`;
+  document.getElementById('d3-res').className=`rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}`;
+  updSrecRes();
+}
+
+function updD4(){
+  const r=parseInt(document.getElementById('d4r').value);
+  const v=parseInt(document.getElementById('d4v').value);
+  const vc=parseInt(document.getElementById('d4vc').value);
+  const t=parseInt(document.getElementById('d4t').value);
+  const a=parseInt(document.getElementById('d4a').value);
+  const pi=parseInt(document.getElementById('d4pi').value);
+  const d4=Math.min(25,Math.max(r,v,vc,t,a,pi));
+  dScores.D4=d4;
+  const n=nlv(d4);
+  document.getElementById('d4-res').innerHTML=`D4 = MAX(ruído=${r}, vib.mão=${v}, vib.corpo=${vc}, térmico=${t}, ar=${a}, piso=${pi}) = <strong>${d4} — ${n}</strong>`;
+  document.getElementById('d4-res').className=`rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}`;
+  updSrecRes();
+}
+
+function updD5(){
+  const j=parseInt(document.getElementById('d5j').value);
+  const he=parseInt(document.getElementById('d5he').value);
+  const r=parseInt(document.getElementById('d5r').value);
+  const ac=parseInt(document.getElementById('d5ac').value);
+  const tu=parseInt(document.getElementById('d5tu').value);
+  const vo=parseInt(document.getElementById('d5vo').value);
+  const mo=parseInt(document.getElementById('d5mo').value);
+  const ca=parseInt(document.getElementById('d5ca').value);
+  const soma=j+he+r+ac+tu+vo+mo+ca;
+  const d5=Math.min(25,Math.round((soma/58)*25));
+  dScores.D5=d5;
+  const n=nlv(d5);
+  document.getElementById('d5-res').innerHTML=`Soma = ${j}+${he}+${r}+${ac}+${tu}+${vo}+${mo}+${ca} = ${soma}/58<br>D5 = (${soma}/58)×25 = <strong>${d5} — ${n}</strong>`;
+  document.getElementById('d5-res').className=`rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}`;
+  updSrecRes();
+}
+
+function updD6(){
+  const w1=parseInt(document.getElementById('w1').value);
+  const w2f=parseInt(document.getElementById('w2f').value);
+  const w2m=parseInt(document.getElementById('w2m').value);
+  const w3=parseInt(document.getElementById('w3').value);
+  const w4=parseInt(document.getElementById('w4').value);
+  const w5=parseInt(document.getElementById('w5').value);
+  const w6=parseInt(document.getElementById('w6').value);
+  const w7=parseInt(document.getElementById('w7').value);
+  const cs3=parseInt(document.getElementById('cs3').value);
+  document.getElementById('w1v').textContent=w1;document.getElementById('w2fv').textContent=w2f;document.getElementById('w2mv').textContent=w2m;document.getElementById('w3v').textContent=w3;document.getElementById('w4v').textContent=w4;document.getElementById('w5v').textContent=w5;document.getElementById('w7v').textContent=w7;
+  const wai=w1+(w2f+w2m)*2+(6-w3)+w4+w5+w6+w7;
+  const waiCls=wai>=44?"Ótima":wai>=37?"Boa":wai>=28?"Moderada":"Pobre";
+  const waiS=wai>=44?3:wai>=37?7:wai>=28?13:21;
+  let d6=cs3?Math.max(20,waiS):waiS;
+  d6=Math.min(25,d6);
+  dScores.D6=d6;
+  const n=nlv(d6);
+  document.getElementById('d6-res').innerHTML=`WAI total ≈ ${wai} (${waiCls}) → score ${waiS}${cs3?" → CS-3: mínimo 20 + encaminhar médico do trabalho":""}<br>D6 = <strong>${d6} — ${n}</strong>`;
+  document.getElementById('d6-res').className=`rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}`;
+  updSrecRes();
+}
+
+function updSrecRes(){
+  const el=document.getElementById('srec-final');
+  if(!el)return;
+  const ds=[['D1 — Risco Postural',dScores.D1],['D2 — Repetitividade',dScores.D2],['D3 — Carga Física',dScores.D3],['D4 — Ambiental',dScores.D4],['D5 — Organização',dScores.D5],['D6 — Vulnerabilidade',dScores.D6]];
+  const gA=Math.max(dScores.D1,dScores.D2,dScores.D3);
+  const gB=Math.max(dScores.D4,dScores.D5);
+  const gC=dScores.D6;
+  const srec=Math.max(gA,gB,gC);
+  const n=nlv(srec);
+  el.innerHTML=ds.map(([nm,v])=>`<div class="drow"><div class="dname">${nm}</div><div class="dscore" style="color:${v>=17?'#A32D2D':v>=10?'#854F0B':'#3B6D11'}">${v}</div><div class="bw"><div class="bf ${bfcls(v)}" style="width:${bw(v)}%"></div></div><span class="badge ${bcls(v)}">${nlv(v)}</span></div>`).join('')
+    +`<div style="margin-top:10px;padding:10px;background:var(--color-background-secondary);border-radius:8px;font-size:11px;line-height:1.8">
+    Grupo A (D1,D2,D3) = MAX(${dScores.D1},${dScores.D2},${dScores.D3}) = ${gA}<br>
+    Grupo B (D4,D5) = MAX(${dScores.D4},${dScores.D5}) = ${gB}<br>
+    Grupo C (D6) = ${gC}<br>
+    <strong>SREC = MAX(${gA},${gB},${gC}) = <span style="font-size:16px;color:${srec>=17?'#A32D2D':srec>=10?'#854F0B':'#3B6D11'}">${srec}</span> — ${n}</strong>
+    <div style="height:6px;background:var(--color-background-primary);border-radius:3px;overflow:hidden;margin-top:6px"><div style="height:100%;width:${bw(srec)}%;background:${srec>=17?'#E24B4A':srec>=10?'#EF9F27':'#639922'};border-radius:3px"></div></div>
+    </div>`;
+}
+
+function calcAIHA(){
+  const med=parseFloat(document.getElementById('cm').value);
+  const pol=document.getElementById('cpol').value;
+  const sev=parseInt(document.getElementById('csev').value);
+  document.getElementById('cmv').textContent=med.toFixed(2);
+  const mr=pol==='N'?med:6-med;
+  const sa=adjSev(sev,mr);
+  const sc=Math.min(25,Math.round(mr*sa));
+  const n=nlv(sc);
+  const prazo=n==="Crítico"?"15 dias — NR-1 item 1.5.7":n==="Alto"?"30 dias":n==="Moderado"?"90 dias":"Monitoramento anual";
+  document.getElementById('calc-res').innerHTML=`
+    <div class="g2" style="margin-bottom:10px">
+      <div class="metric"><div class="mlabel">Média das respostas</div><div class="mval">${med.toFixed(2)}</div></div>
+      <div class="metric"><div class="mlabel">Média de Risco ${pol==="P"?"(6−"+med.toFixed(2)+")":" (direta)"}</div><div class="mval">${mr.toFixed(2)}</div></div>
+      <div class="metric"><div class="mlabel">Sev. base → ajustada</div><div class="mval">${sev} → ${sa}</div></div>
+      <div class="metric"><div class="mlabel">Score final</div><div class="mval" style="color:${sc>=17?'#A32D2D':sc>=10?'#854F0B':'#3B6D11'}">${sc}/25</div></div>
+    </div>
+    <div class="rb rb${n==="Crítico"?"c":n==="Alto"?"a":n==="Moderado"?"m":"b"}">
+      <strong>${n}</strong> — Prazo: ${prazo}<br>
+      <span style="font-size:10px">Fórmula: ${mr.toFixed(2)} × ${sa} = ${(mr*sa).toFixed(2)} → ${sc}</span>
+    </div>`;
+}
+
+function updVersao(){
+  const v=parseInt(document.getElementById('tot-colab').value)||0;
+  const el=document.getElementById('versao-badge');
+  if(v<=30)el.innerHTML='<span class="badge bm">Versão Curta (até 30 colaboradores)</span>';
+  else el.innerHTML='<span class="badge bi">Versão Média (31+ colaboradores)</span>';
+}
+
+document.querySelectorAll('.ni').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+    document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+    el.classList.add('on');
+    const pg=document.getElementById('pg-'+el.dataset.pg);
+    if(pg)pg.classList.add('on');
+    const pg2=el.dataset.pg;
+    if(pg2==='dashboard')initDash();
+    if(pg2==='copsoq')initCopsoq();
+    if(pg2==='srec'){updD1();updD2();updD3();updD4();updD5();updD6();}
+    if(pg2==='inventario')initInventario();
+    if(pg2==='plano')initPlano();
+    if(pg2==='ciclos')initCiclos();
+    if(pg2==='parecer')initParecer();
+    if(pg2==='perguntas')initPerguntas();
+    if(pg2==='perfis')initPerfis();
+    if(pg2==='calc')calcAIHA();
+  });
+});
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    const grp=t.dataset.tab;
+    const tgt=t.dataset.tgt;
+    t.closest('.card,.pg').querySelectorAll(`.tab[data-tab="${grp}"]`).forEach(x=>x.classList.remove('on'));
+    t.closest('.card,.pg').querySelectorAll(`.tc[id^="${grp}-"]`).forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    const el=document.getElementById(`${grp}-${tgt}`);
+    if(el)el.classList.add('on');
+    if(grp==='pq'&&tgt==='pq-m')initPerguntas();
+    if(grp==='pq'&&tgt==='pq-l')initPerguntas();
+    if(grp==='cop'&&tgt==='cop-result')calcCopsoq();
+  });
+});
+
+initDash();
+calcAIHA();
+updD1();updD2();updD3();updD4();updD5();updD6();
+initInventario();
+initPlano();
+</script>
